@@ -84,6 +84,7 @@ Start Web UI
 
 ```bash
 streamlit run app.py
+```
 
 4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
 5. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
