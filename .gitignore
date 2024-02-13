@@ -1,0 +1,17 @@
+.DS_Store
+models/*
+**/__pycache__/**
+**.pyc
+**.bak
+test.py
+.streamlit/config.toml
+workspace/
+**.log
+lib/
+bin/
+__pycache__/
+.streamlit/
+include/
+pyvenv.cfg
+share/
+etc/
