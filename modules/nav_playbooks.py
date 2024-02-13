@@ -62,7 +62,7 @@ def app(message_store, current_page="nav_playbooks"):
         st.chat_message("user").write(prompt)
         with st.spinner("Processing request..."):
             if db_retriever:
-                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever, message_store=message_store,use_retrieval_chain=True)
+                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": 5}), message_store=message_store,use_retrieval_chain=True)
                 st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
                 app_st_session_utils.add_message_to_session("user", prompt)
                 app_st_session_utils.add_message_to_session("assistant", formatted_response)

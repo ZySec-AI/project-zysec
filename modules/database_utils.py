@@ -33,8 +33,8 @@ def initialize_chroma_db(file_path):
         return None
 
     # Create a retriever from the Chroma database
-    retriever = db.as_retriever()
-    return retriever
+    #retriever = db.as_retriever()
+    return db
 
 
 
