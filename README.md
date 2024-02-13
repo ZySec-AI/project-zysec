@@ -47,7 +47,7 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
       ```bash
         git clone https://github.com/ZySec-AI/ZySec.git
       ```
-2. **Install Dependencies:** Navigate to the cloned directory and install necessary dependencies using `pip install -r requirements.txt`.
+2. **Install Dependencies:** Navigate to the cloned directory and install necessary dependencies using.
 
       Go to the project directory
 
