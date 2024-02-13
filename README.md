@@ -6,8 +6,9 @@ Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project 
 
 1. **AI-Driven Cybersecurity:** Experience the full potential of the ZySec 7B model, a specialized AI tool for cybersecurity.
 2. **24/7 Expert Assistance:** Constant support with expert guidance, ensuring seamless operations during SOC shifts.
-3. **Instant Playbook Access:** Quickly search and access your playbooks and documents, streamlining the information retrieval process.
-4. **Ongoing Internet Research:** Benefit from AI-enabled extensive internet research for comprehensive insights (Note: Internet use is optional and for this feature only).
+3. **Playbook Access:** Quickly search and access your playbooks and documents, streamlining the information retrieval process.
+4. **Standards Explorer:** Quickly search and access various standards, like a expert well-versed with any standards.
+5. **Ongoing Internet Research:** Benefit from AI-enabled extensive internet research for comprehensive insights (Note: Internet use is optional and for this feature only).
 
 ## About ZySec AI and the Author
 
