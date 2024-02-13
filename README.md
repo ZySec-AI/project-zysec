@@ -1,6 +1,6 @@
 # Transforming CyberSecurity with AI Innovation: ZySec AI
 
-Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Our project, powered by the innovative ZySec 7B model, is reshaping the cybersecurity landscape with AI-driven solutions.
+Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project ZySec, powered by the innovative ZySec 7B model, is reshaping the cybersecurity landscape with AI-driven solutions.
 
 ## Key Features
 
@@ -12,7 +12,7 @@ Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Our proj
 ## About ZySec AI and the Author
 
 <details>
-<summary>About ZySec AI and the Author</summary>
+<summary>About Project ZySec AI</summary>
 
 ### About ZySec AI
 
@@ -21,6 +21,8 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
 - [🔗 View Our Road Map](https://github.com/ZySec-AI/ZySec/blob/main/roadmap.md)
 - [🔗 Explore the Project on GitHub](https://github.com/ZySec-AI/ZySec.git)
 - [🔗 Contact Us](https://docs.google.com/forms/d/e/1FAIpQLSdkqIjQUoUOorsWXVzgQhJ-vbp1OpN1ZI0u3u8fK_o-UxII2w/viewform)
+
+*Note: ZySec AI is designed to operate without internet connectivity, ensuring complete privacy. The only exception is the optional internet research feature.*
 
 ### ZySec 7B Model
 
@@ -69,7 +71,7 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
       Install dependencies
 
       ```bash
-        pip install -r requirements
+        pip install -r requirements.txt
       ```
       Install model server
 
@@ -88,8 +90,6 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
 4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
 5. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
 
-*Note: ZySec AI is designed to operate without internet connectivity, ensuring complete privacy. The only exception is the optional internet research feature.*
-
 ## License
 
 ZySec AI is released under the Apache License, Version 2.0 (Apache-2.0), a permissive open-source license. This license allows you to freely use, modify, distribute, and sell your own versions of this work, under the terms of the license.
@@ -98,4 +98,4 @@ ZySec AI is released under the Apache License, Version 2.0 (Apache-2.0), a permi
 
 ## Acknowledgements
 
-Special thanks to the HuggingFace and LangChain communities for their inspiration and contributions to the field of AI and cybersecurity. Their pioneering work continues to inspire projects like ZySec AI.
+Special thanks to the HuggingFace and LangChain communities for their inspiration and contributions to the field of AI. Their pioneering work continues to inspire projects like ZySec AI.
