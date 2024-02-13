@@ -37,19 +37,27 @@ def main():
 
     # Sidebar navigation
     with st.sidebar:
-        selected = option_menu("ZySec AI", ["Private AI", "Playbooks", "Summarizer", "Researcher", "About"], icons=["shield-lock", "book", "file-bar-graph", "robot", "gear"], default_index=0, menu_icon="cast", styles={})
-    
+        selected = option_menu(
+            "ZySec AI", 
+            ["Private AI", "Playbooks", "Standards", "Summarizer", "Researcher", "About"], 
+            icons=["shield-lock", "book", "shield", "file-bar-graph", "robot", "gear"], 
+            default_index=0, 
+            menu_icon="cast", 
+            styles={}
+        )
     st.markdown("---")
 
     try:
         message_store = st.session_state['message_store']
 
         if selected == "Playbooks":
-            nav_playbooks.app(message_store)
+            nav_playbooks.app(message_store,current_page="nav_playbooks")
         elif selected == "Private AI":
             nav_private_ai.app(message_store)
         elif selected == "Summarizer":
             nav_summarizer.app()
+        elif selected == "Standards":
+            nav_playbooks.app(message_store,current_page="nav_standards")
         elif selected == "About":
             nav_about.app()
         elif selected == "Researcher":

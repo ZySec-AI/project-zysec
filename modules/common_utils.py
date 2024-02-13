@@ -39,14 +39,22 @@ def is_file_processed(file_md5):
         return False
 
 def delete_files(work_dir=work_dir):
-    for filename in os.listdir(work_dir):
-        file_path = os.path.join(work_dir, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
+    for root, dirs, files in os.walk(work_dir, topdown=False):
+        for name in files:
+            file_path = os.path.join(root, name)
+            try:
                 os.unlink(file_path)
                 app_logger.info(f"Deleted file: {file_path}")
-        except Exception as e:
-            app_logger.error(f"Failed to delete {file_path}. Reason: {e}")
+            except Exception as e:
+                app_logger.error(f"Failed to delete {file_path}. Reason: {e}")
+
+        for name in dirs:
+            dir_path = os.path.join(root, name)
+            try:
+                os.rmdir(dir_path)
+                app_logger.info(f"Deleted directory: {dir_path}")
+            except Exception as e:
+                app_logger.error(f"Failed to delete {dir_path}. Reason: {e}")
 
 def save_uploaded_file(uploaded_file, uploads_path=work_dir+'docs'):
     file_path = os.path.join(uploads_path, uploaded_file.name)
@@ -88,10 +96,11 @@ def manage_model_control(command):
         manage_model_control('start')
 def get_system_role(page, message_store, username=""):
     role_messages = {
-        "nav_private_ai": "You are an AI Assistant specialized in Cyber Security, named ZySec, developed by ZySec.AI team",
-        "nav_summarize": "You are an AI Assistant, specialized in content summarization focus only on English content.",
-        "nav_playbook": "You are an AI Assistant, specialized in finding answers from the given context.",
-        "nav_researcher": "You are an Research Assistant, You will assist user with the information needed."
+            "nav_private_ai": "You are ZySec, an AI Assistant specialized in Cyber Security, developed by the ZySec.AI team to provide expert insights and solutions in cybersecurity.",
+            "nav_summarize": "You are ZySec, an AI Assistant specialized in content summarization. Your role is to efficiently condense English content, providing clear and concise summaries.",
+            "nav_playbooks": "You are ZySec, an AI Assistant designed to extract specific answers and insights from playbooks and documents, aiding users in navigating through complex information.",
+            "nav_researcher": "You are ZySec, acting as a Research Assistant. Your task is to assist users with comprehensive research support, offering information and insights for various queries.",
+            "nav_standards": "You are ZySec, functioning as a Standards Assistant. Your expertise lies in assisting users with understanding and navigating various standards, particularly in cybersecurity."
     }
     message_store.update_message(page, "system", role_messages.get(page, "Default system role message"))
 
@@ -99,7 +108,9 @@ def get_system_role(page, message_store, username=""):
 def page_greetings(page, username=""):
     greetings = {
         "nav_private_ai": f"Hello {username}! I'm ZySec, your AI assistant in Cyber Security." if username else "Hello! I'm ZySec, your AI assistant in Cyber Security.",
-        "nav_playbook": f"Hello {username}! I'm ZySec, your AI assistant here to help you to find information from your playbooks or documents." if username else "I'm ZySec, your AI assistant here to help you to find information from your playbooks or documents.",
+        "nav_standards": f"Hello {username}! I'm ZySec, your AI assistant here to help you queries from standards you uploaded." if username else "I'm ZySec, your AI assistant here to help you queries from standards you uploaded.",
+        "nav_playbooks": f"Hello {username}! I'm ZySec, your AI assistant here to help you to find information from your playbooks or documents." if username else "I'm ZySec, your AI assistant here to help you to find information from your playbooks or documents.",
+        "nav_researcher": f"Hello {username}! I'm ZySec, your AI assistant here to learn topic from Internet and assist you with your queries" if username else "I'm ZySec, your AI assistant here to learn topic from Internet and assist you with your queries.",
         "default": "Hello! How can I assist you today?"
     }
     return greetings.get(page, greetings["default"])

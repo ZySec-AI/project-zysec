@@ -16,22 +16,26 @@ def initialize_chroma_db(file_path):
     :param file_path: Path to the Chroma database file
     :return: A retriever object if initialization is successful, None otherwise
     """
-    # Check if the Chroma database file exists
-    if not os.path.exists(file_path):
-        app_logger.info(f"Chroma database not found at {file_path}. Creating a new one.")
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        # Additional steps might be needed here to properly initialize a new Chroma database file
-
     # Initialize embeddings
     embeddings = HuggingFaceEmbeddings(model_name=app_constants.EMBEDDING_MODEL_NAME)
 
     # Initialize Chroma database
-    db = Chroma(persist_directory=file_path, embedding_function=embeddings, client_settings=app_constants.CHROMA_SETTINGS)
+    try:
+        if os.path.exists(file_path):
+            app_logger.info(f"Using existing Chroma database at {file_path}.")
+        else:
+            app_logger.info(f"Chroma database not found at {file_path}. Creating a new one.")
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        db = Chroma(persist_directory=file_path, embedding_function=embeddings, client_settings=app_constants.CHROMA_SETTINGS)
+    except Exception as e:
+        app_logger.error(f"Failed to initialize Chroma database at {file_path}. Reason: {e}")
+        return None
 
     # Create a retriever from the Chroma database
     retriever = db.as_retriever()
-
     return retriever
+
 
 
 def get_chroma_db_files(directory):

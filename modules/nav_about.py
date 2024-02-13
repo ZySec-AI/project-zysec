@@ -45,9 +45,10 @@ def app():
             app_st_session_utils.reload_page()
 
         if st.button("Reset Data"):
-            common_utils.delete_files_and_folders()
+            common_utils.delete_files()
             app_logger.info("Data reset successfully.")
             st.success("Data reset successfully.")
+            st.rerun()
 
 
     with st.expander("About ZySec and the Author"):

@@ -43,4 +43,5 @@ CHUNK_OVERLAP = 200
 VECTORSTORE_PROCESSED_RECORDS = 'processed_log.json'
 DEFAULT_SEARCH_COUNT = 5
 LOCAL_PERSISTANT_DB = "./workspace/db/local_chroma_db"
+STANDARDS_DB = "./workspace/db/standards_chroma_db"
 # ENABLE_PAGE_HISTORY = [""]#["nav_private_ai","nav_playbook"]
