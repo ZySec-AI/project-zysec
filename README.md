@@ -41,36 +41,13 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
 ### Setting Up the Streamlit Application
 
 1. **Clone the Repository:** Start by cloning the ZySec AI repository from GitHub to your local machine.
-2. **Install Dependencies:** Navigate to the cloned directory and install necessary dependencies using `pip install -r requirements.txt`.
-3. **Launch the App:** Run the app with the command `streamlit run app.py`. This will start the Streamlit server and the application should open in your default web browser.
-4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
-5. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
-
-*Note: ZySec AI is designed to operate without internet connectivity, ensuring complete privacy. The only exception is the optional internet research feature.*
-
-## License
-
-ZySec AI is released under the Apache License, Version 2.0 (Apache-2.0), a permissive open-source license. This license allows you to freely use, modify, distribute, and sell your own versions of this work, under the terms of the license.
-
-[🔗 View the Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-## Acknowledgements
-
-Special thanks to the HuggingFace and LangChain communities for their inspiration and contributions to the field of AI and cybersecurity. Their pioneering work continues to inspire projects like ZySec AI.
-
-## Getting Started
-
-To get started with ZySec AI, follow these steps:
-
-
-
-### Run Locally
 
 Clone the project
 
 ```bash
   git clone https://github.com/ZySec-AI/ZySec.git
 ```
+2. **Install Dependencies:** Navigate to the cloned directory and install necessary dependencies using `pip install -r requirements.txt`.
 
 Go to the project directory
 
@@ -94,14 +71,31 @@ Install dependencies
 ```bash
   pip install -r requirements
 ```
-
-Start the server
+Install model server
 
 ```bash
 ./start_model_server.sh
 ```
 
+
+3. **Launch the App:** Run the app with the command `streamlit run app.py`. This will start the Streamlit server and the application should open in your default web browser.
+
 Start Web UI
 
 ```bash
 streamlit run app.py
+
+4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
+5. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
+
+*Note: ZySec AI is designed to operate without internet connectivity, ensuring complete privacy. The only exception is the optional internet research feature.*
+
+## License
+
+ZySec AI is released under the Apache License, Version 2.0 (Apache-2.0), a permissive open-source license. This license allows you to freely use, modify, distribute, and sell your own versions of this work, under the terms of the license.
+
+[🔗 View the Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+## Acknowledgements
+
+Special thanks to the HuggingFace and LangChain communities for their inspiration and contributions to the field of AI and cybersecurity. Their pioneering work continues to inspire projects like ZySec AI.
