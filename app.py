@@ -17,7 +17,7 @@ if 'message_store' not in st.session_state:
 def request_username():
     st.title("Welcome to ZySec AI")
     app_logger.info("App started")
-    username = st.text_input("How do you want me to call you?",value="Venky" ,placeholder="Enter your name")
+    username = st.text_input("How do you want me to call you?",value="Security Ninja" ,placeholder="Enter your name")
     submit_button = st.button('Submit')
 
     if submit_button and username:
