@@ -4,16 +4,33 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from modules import app_constants, app_logger
 
+app_logger = app_logger.app_logger
+
 DB_DIR = "./workspace/db/local_chroma_db"
 
 
 def initialize_chroma_db(file_path):
+    """
+    Initializes or creates a new Chroma database.
+
+    :param file_path: Path to the Chroma database file
+    :return: A retriever object if initialization is successful, None otherwise
+    """
+    # Check if the Chroma database file exists
     if not os.path.exists(file_path):
-        app_logger.error(f"Chroma database not found at {file_path}")
-        return None
+        app_logger.info(f"Chroma database not found at {file_path}. Creating a new one.")
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        # Additional steps might be needed here to properly initialize a new Chroma database file
+
+    # Initialize embeddings
     embeddings = HuggingFaceEmbeddings(model_name=app_constants.EMBEDDING_MODEL_NAME)
-    db = Chroma(persist_directory=file_path, embedding_function=embeddings,client_settings=app_constants.CHROMA_SETTINGS)
+
+    # Initialize Chroma database
+    db = Chroma(persist_directory=file_path, embedding_function=embeddings, client_settings=app_constants.CHROMA_SETTINGS)
+
+    # Create a retriever from the Chroma database
     retriever = db.as_retriever()
+
     return retriever
 
 

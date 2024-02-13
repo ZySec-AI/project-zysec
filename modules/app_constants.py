@@ -5,7 +5,7 @@ from chromadb.config import Settings
 
 from modules import app_logger
 
-
+app_logger = app_logger.app_logger
 # Use shared_variable in this module
 openai_api_key = os.environ.get("OPENAI_API_KEY", "NONE")
 

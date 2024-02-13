@@ -8,7 +8,7 @@ from modules import common_utils
 from modules import app_logger
 # Assuming all necessary loader classes are imported
 
-from . import app_constants
+from modules import app_constants
 
 app_logger = app_logger.app_logger
 
