@@ -49,33 +49,33 @@ Clone the project
 ```
 2. **Install Dependencies:** Navigate to the cloned directory and install necessary dependencies using `pip install -r requirements.txt`.
 
-Go to the project directory
+    Go to the project directory
 
-```bash
-  cd ZySec
-```
-Make python virtual environment
+    ```bash
+      cd ZySec
+    ```
+    Make python virtual environment
 
-```bash
-  python -m venv .
-```
+    ```bash
+      python -m venv .
+    ```
 
-Activate virtual environment
+    Activate virtual environment
 
-```bash
-  source bin/activate
-```
+    ```bash
+      source bin/activate
+    ```
 
-Install dependencies
+    Install dependencies
 
-```bash
-  pip install -r requirements
-```
-Install model server
+    ```bash
+      pip install -r requirements
+    ```
+    Install model server
 
-```bash
-./start_model_server.sh
-```
+    ```bash
+    ./start_model_server.sh
+    ```
 
 
 3. **Launch the App:** Run the app with the command `streamlit run app.py`. This will start the Streamlit server and the application should open in your default web browser.
