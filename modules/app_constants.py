@@ -28,9 +28,10 @@ DOCUMENT_MAP = {
 }
 MODELS_PATH = "./models"
 EMBEDDING_MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
+MODEL_NAME = ''
 # Constants
 WORKSPACE_DIRECTORY = './workspace/'
-CHUNK_SIZE = 1000  # Adjust as needed
+
 
 CHROMA_SETTINGS = Settings(
     anonymized_telemetry=False,
@@ -42,6 +43,4 @@ CHUNK_SIZE = 880
 CHUNK_OVERLAP = 200
 VECTORSTORE_PROCESSED_RECORDS = 'processed_log.json'
 DEFAULT_SEARCH_COUNT = 5
-LOCAL_PERSISTANT_DB = "./workspace/db/local_chroma_db"
-STANDARDS_DB = "./workspace/db/standards_chroma_db"
-# ENABLE_PAGE_HISTORY = [""]#["nav_private_ai","nav_playbook"]
+DEFAULT_MESSAGE_HISTORY = 4

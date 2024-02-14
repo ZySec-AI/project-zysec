@@ -1,19 +1,18 @@
+
 import os
 import streamlit as st
 from langchain_openai import ChatOpenAI
 from langchain.chains import load_summarize_chain
-from langchain_community.document_loaders import PyPDFLoader, TextLoader
-from langchain_community.document_loaders import UnstructuredWordDocumentLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader, UnstructuredWordDocumentLoader
 from langchain.prompts import PromptTemplate
-from modules import app_constants
-from modules import app_logger
+from modules import app_page_definitions, app_logger,app_constants
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
 
 # Configurable batch size (4 pages per batch)
 batch_size = 4
-WORKSPACE_DIRECTORY = app_constants.WORKSPACE_DIRECTORY
+WORKSPACE_DIRECTORY = app_page_definitions.PAGE_CONFIG["nav_summarize"]["persistent_db"]
 
 def save_uploaded_file(uploaded_file, directory=WORKSPACE_DIRECTORY + "/tmp"):
     if not os.path.exists(directory):
@@ -38,8 +37,12 @@ def process_file(file_path, file_type):
 
 def app():
     app_logger.info("Starting Streamlit app - Summarizer Tool page")
-    st.title("📚 Summarizer Tool")
-    st.caption("🔍 Upload your document for summarization.")
+
+    # Fetch page configuration from app_page_definitions
+    page_config = app_page_definitions.PAGE_CONFIG.get("nav_summarize")
+
+    st.title(page_config["title"])
+    st.caption(page_config["caption"])
     st.session_state.current_page = "nav_summarize"
 
     uploaded_file = st.file_uploader("Upload your document here:", type=['txt', 'pdf', 'docx'], key="file_uploader")
@@ -61,7 +64,7 @@ def app():
         if st.button("Summarize"):
             with st.spinner('Processing... Please wait'):
                 llm = ChatOpenAI(
-                    model_name="gpt-3.5-turbo",
+                    model_name=app_constants.MODEL_NAME,
                     openai_api_key=app_constants.openai_api_key,
                     base_url=app_constants.local_model_uri,
                     streaming=True

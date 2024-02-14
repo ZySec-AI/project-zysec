@@ -1,14 +1,18 @@
 import streamlit as st
-from modules import app_prompt, app_researcher, app_logger, database_utils, app_to_vectorstore
-from . import app_constants, common_utils
-from . import app_st_session_utils  # Importing the session utilities module
+from modules import app_prompt, app_researcher, app_logger, database_utils, app_to_vectorstore, app_page_definitions
+from . import common_utils
+from . import app_st_session_utils,app_constants  # Importing the session utilities module
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
 
 def app(message_store):
     app_logger.info("Navigating to nav_researcher page")
-    st.title("🤖 Research Assistant")
+
+    # Fetch page configuration from app_page_definitions
+    page_config = app_page_definitions.PAGE_CONFIG.get("nav_researcher")
+
+    st.title(page_config["title"])
     current_page = "nav_researcher"
 
     # Initialize or update session state variables using session utilities
@@ -16,7 +20,7 @@ def app(message_store):
     app_st_session_utils.initialize_session_state('page_loaded', False)
     app_st_session_utils.initialize_session_state('message_store', message_store)
 
-    st.caption("🔒 AttackIO App's ZySec 7B Model, expert in cybersecurity domain crafted for helping security experts with privacy!")
+    st.caption(page_config["caption"])
 
     topic = st.text_input("Enter Topic for Research", "Threat Management")
     research_button = st.button("Go Research")

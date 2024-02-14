@@ -19,7 +19,7 @@ def query_llm(prompt, retriever=None, message_store=None, use_retrieval_chain=Fa
         if use_retrieval_chain:
             app_logger.info("Using ChatOpenAI with RetrievalQAWithSourcesChain")
             llm = ChatOpenAI(
-                model_name="gpt-3.5-turbo",
+                model_name=app_constants.MODEL_NAME,
                 openai_api_key=app_constants.openai_api_key,
                 base_url=app_constants.local_model_uri,
                 streaming=True
@@ -34,7 +34,7 @@ def query_llm(prompt, retriever=None, message_store=None, use_retrieval_chain=Fa
             app_logger.info("Using direct OpenAI API call")
             llm = OpenAI(
                 base_url=app_constants.local_model_uri,
-                api_key="sk-no-key-required"
+                api_key=app_constants.openai_api_key
             )
 
         # Update page messages if there's a change in the page
@@ -57,7 +57,7 @@ def query_llm(prompt, retriever=None, message_store=None, use_retrieval_chain=Fa
             response = qa.invoke(prompt)
         else:
             response = llm.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=app_constants.MODEL_NAME,
                 messages=messages_to_send
             )
 

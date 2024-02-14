@@ -37,7 +37,7 @@ def app(message_store):
     if prompt:
         st.chat_message("user").write(prompt)
         with st.spinner("Processing your request..."):
-            formatted_response = app_prompt.query_llm(prompt, message_store=message_store)
+            formatted_response = app_prompt.query_llm(prompt, message_store=message_store,retriever=False)
             st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
             app_st_session_utils.add_message_to_session("user", prompt)
             app_st_session_utils.add_message_to_session("assistant", formatted_response)

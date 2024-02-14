@@ -108,7 +108,7 @@ def url_list_downloader(url_list, topic):
 def search_term_ddg(topic,count=DEFAULT_SEARCH_COUNT):
     try:
         llm = ChatOpenAI(
-            model_name="gpt-3.5-turbo",
+            model_name=app_constants.MODEL_NAME,
             openai_api_key=app_constants.openai_api_key,
             base_url=app_constants.local_model_uri,
             streaming=True
