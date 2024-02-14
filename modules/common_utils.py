@@ -2,7 +2,7 @@ import hashlib
 import re
 import json
 import os
-from modules import app_constants
+from modules import app_constants,app_page_definitions
 from modules import app_logger, app_st_session_utils
 import subprocess
 # Use the logger from app_config
@@ -94,26 +94,18 @@ def manage_model_control(command):
         # Reload the model (stop and start)
         manage_model_control('stop')
         manage_model_control('start')
-def get_system_role(page, message_store, username=""):
-    role_messages = {
-            "nav_private_ai": "You are ZySec, an AI Assistant specialized in Cyber Security, developed by the ZySec.AI team to provide expert insights and solutions in cybersecurity.",
-            "nav_summarize": "You are ZySec, an AI Assistant specialized in content summarization. Your role is to efficiently condense English content, providing clear and concise summaries.",
-            "nav_playbooks": "You are ZySec, an AI Assistant designed to extract specific answers and insights from playbooks and documents, aiding users in navigating through complex information.",
-            "nav_researcher": "You are ZySec, acting as a Research Assistant. Your task is to assist users with comprehensive research support, offering information and insights for various queries.",
-            "nav_standards": "You are ZySec, functioning as a Standards Assistant. Your expertise lies in assisting users with understanding and navigating various standards, particularly in cybersecurity."
-    }
-    message_store.update_message(page, "system", role_messages.get(page, "Default system role message"))
 
-# Define greetings for different pages
+def get_system_role(page, message_store):
+    system_role = app_page_definitions.PAGE_CONFIG.get(page, {}).get("system_role", "Default system role message")
+    message_store.update_message(page, "system", system_role)
+
 def page_greetings(page, username=""):
-    greetings = {
-        "nav_private_ai": f"Hello {username}! I'm ZySec, your AI assistant in Cyber Security." if username else "Hello! I'm ZySec, your AI assistant in Cyber Security.",
-        "nav_standards": f"Hello {username}! I'm ZySec, your AI assistant here to help you queries from standards you uploaded." if username else "I'm ZySec, your AI assistant here to help you queries from standards you uploaded.",
-        "nav_playbooks": f"Hello {username}! I'm ZySec, your AI assistant here to help you to find information from your playbooks or documents." if username else "I'm ZySec, your AI assistant here to help you to find information from your playbooks or documents.",
-        "nav_researcher": f"Hello {username}! I'm ZySec, your AI assistant here to learn topic from Internet and assist you with your queries" if username else "I'm ZySec, your AI assistant here to learn topic from Internet and assist you with your queries.",
-        "default": "Hello! How can I assist you today?"
-    }
-    return greetings.get(page, greetings["default"])
+    default_greeting = "Hello! How can I assist you today?"
+    greeting = app_page_definitions.PAGE_CONFIG.get(page, {}).get("greeting", default_greeting)
+    if username:
+        greeting = greeting.replace("Hello", f"Hello {username}")
+    return greeting
+
 
 def setup_initial_folders():
     docs_path = os.path.join(work_dir, "docs")

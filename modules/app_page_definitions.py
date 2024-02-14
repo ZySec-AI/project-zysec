@@ -1,3 +1,4 @@
+#app_page_definitions.py
 PAGE_CONFIG = {
     "nav_private_ai": {
         "title": "Cyber Security AI",
@@ -39,6 +40,13 @@ PAGE_CONFIG = {
         "caption": "🤖 Embark on a journey through the world of AI. Learn, interact, and experiment.",
         "greeting": "Welcome to AI Exploration! Begin your journey into AI learning and application.",
         "persistent_db": "./workspace/db/explore_ai_chroma_db"
+    },
+        "default": {
+        "title": "Playbook Analysis",
+        "caption": "📘 Dive into your playbooks. Upload and analyze them for detailed insights.",
+        "greeting": "Ready to analyze your playbook? Start by uploading your document.",
+        "system_role": "You are ZySec, an AI Assistant designed to extract specific answers and insights from playbooks and documents, aiding users in navigating through complex information.",
+        "persistent_db": "./workspace/db/playbooks_chroma_db"
     },
     # Add other pages as needed
 }

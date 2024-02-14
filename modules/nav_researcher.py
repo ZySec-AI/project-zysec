@@ -10,10 +10,10 @@ def app(message_store):
     app_logger.info("Navigating to nav_researcher page")
 
     # Fetch page configuration from app_page_definitions
-    page_config = app_page_definitions.PAGE_CONFIG.get("nav_researcher")
+    current_page = "nav_researcher"
+    page_config = app_page_definitions.PAGE_CONFIG.get(current_page)
 
     st.title(page_config["title"])
-    current_page = "nav_researcher"
 
     # Initialize or update session state variables using session utilities
     app_st_session_utils.initialize_session_state('current_page', current_page)
