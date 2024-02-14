@@ -48,36 +48,36 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
       Clone the project
 
       ```bash
-        git clone https://github.com/ZySec-AI/ZySec.git
+      git clone https://github.com/ZySec-AI/ZySec.git
       ```
 2. **Install Dependencies:** Navigate to the cloned directory and install necessary dependencies using.
 
       Go to the project directory
 
       ```bash
-        cd ZySec
+    cd ZySec
       ```
       Make python virtual environment
 
       ```bash
-        python -m venv .
+      python -m venv .
       ```
 
       Activate virtual environment
 
       ```bash
-        source bin/activate
+    source bin/activate
       ```
 
       Install dependencies
 
       ```bash
-        pip install -r requirements.txt
+    pip install -r requirements.txt
       ```
       Install model server
 
       ```bash
-      ./start_model_server.sh
+    ./start_model_server.sh
       ```
 
 3. **Launch the App:** Run the app with the command `streamlit run app.py`. This will start the Streamlit server and the application should open in your default web browser.
@@ -85,7 +85,7 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
       Start Web UI
 
       ```bash
-      streamlit run app.py
+    streamlit run app.py
       ```
 
 4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
