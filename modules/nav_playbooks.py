@@ -4,18 +4,12 @@ from modules import app_logger, common_utils, app_to_vectorstore, app_prompt, ap
 # Use the logger from app_config
 app_logger = app_logger.app_logger
 
-def app(message_store, current_page="nav_playbooks"):
+def app(message_store):
+    current_page = "nav_playbooks" 
     persistent_db = app_constants.LOCAL_PERSISTANT_DB
     app_logger.info(f"Starting Streamlit app - {current_page}")
-
-    if current_page == "nav_playbooks":
-        st.title("🔍 Your Playbooks")
-        page_caption = "🎯 Use ZySec 7B Model AI to find specific answers in playbooks or documents by uploading them below."
-        persistent_db = app_constants.LOCAL_PERSISTANT_DB
-    elif current_page == "nav_standards":
-        st.title("⚖️ Security Standards")
-        page_caption = "🔐 Explore and understand various cybersecurity standards by uploading documents or asking queries."
-        persistent_db = app_constants.STANDARDS_DB
+    st.title("🔍 Your Playbooks")
+    page_caption = "🎯 Use ZySec 7B Model AI to find specific answers in playbooks or documents by uploading them below."
 
     # Initialize or update session state variables
     app_st_session_utils.initialize_session_state('current_page', current_page)
@@ -39,7 +33,7 @@ def app(message_store, current_page="nav_playbooks"):
                     st.info(f"File '{uploaded_file.name}' has already been processed.")
 
     # Initialize or retrieve the database
-    db_retriever = app_st_session_utils.initialize_or_retrieve_db(persistent_db)
+    db_retriever_playbooks = app_st_session_utils.initialize_or_retrieve_db(persistent_db)
 
     message_store = st.session_state['message_store']
     username = st.session_state.get('username', '')
@@ -61,8 +55,8 @@ def app(message_store, current_page="nav_playbooks"):
     if prompt:
         st.chat_message("user").write(prompt)
         with st.spinner("Processing request..."):
-            if db_retriever:
-                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": 5}), message_store=message_store,use_retrieval_chain=True)
+            if db_retriever_playbooks:
+                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever_playbooks.as_retriever(search_type="similarity", search_kwargs={"k": 5}), message_store=message_store,use_retrieval_chain=True)
                 st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
                 app_st_session_utils.add_message_to_session("user", prompt)
                 app_st_session_utils.add_message_to_session("assistant", formatted_response)
