@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 # Import your page modules
-from modules import nav_about, nav_private_ai, nav_researcher, nav_summarizer , nav_talk_to_docs
+from modules import nav_about, nav_private_ai, nav_query_docs, nav_researcher, nav_summarizer 
 from modules import app_constants, app_logger, common_utils
 from modules.message_store import MessageStore
 
@@ -35,24 +35,12 @@ def main():
             st.rerun()
         return
 
-    # # Sidebar navigation
-    # with st.sidebar:
-    #     selected = option_menu(
-    #         "ZySec AI", 
-    #         ["Private AI", "Playbooks", "Summarizer", "Researcher", "About"], 
-    #         icons=["shield-lock", "book", "file-bar-graph", "robot", "gear"], 
-    #         default_index=0, 
-    #         menu_icon="cast", 
-    #         styles={}
-    #     )
-    # st.markdown("---")
-
     # Sidebar navigation
     with st.sidebar:
         selected = option_menu(
             "ZySec AI", 
-            ["Private AI", "Playbooks", "Standards", "Explore AI", "Summarizer", "Researcher", "About"], 
-            icons=["shield-lock", "book", "file-earmark-text", "cpu", "file-bar-graph", "search", "info-circle"], 
+            ["Private AI", "Playbooks", "Standards", "Polices", "Summarizer", "Researcher", "About"], 
+            icons=["shield-lock", "book-half", "file-earmark-ruled", "journal-bookmark", "file-text", "search", "info-circle"], 
             default_index=0, 
             menu_icon="cast", 
             styles={}
@@ -63,20 +51,21 @@ def main():
     try:
         message_store = st.session_state['message_store']
 
-        if selected == "Playbooks":
-            nav_talk_to_docs.app(message_store,current_page="nav_playbooks")
-        elif selected == "Private AI":
+
+        if selected == "Private AI":
             nav_private_ai.app(message_store)
-        elif selected == "Summarizer":
-            nav_summarizer.app()
+        elif selected == "Playbooks":
+            nav_query_docs.app(message_store)
         elif selected == "Standards":
-            nav_talk_to_docs.app(message_store,current_page="nav_standards")
-        elif selected == "Explore AI":
-            nav_talk_to_docs.app(message_store,current_page="nav_explore_ai")
-        elif selected == "About":
-            nav_about.app()
+            nav_query_docs.app(message_store,current_page="nav_standards")
+        elif selected == "Policies":
+            nav_query_docs.app(message_store,current_page="nav_policies")
         elif selected == "Researcher":
             nav_researcher.app(message_store)
+        elif selected == "Summarizer":
+            nav_summarizer.app()
+        elif selected == "About":
+            nav_about.app()
         else:
             pass
 

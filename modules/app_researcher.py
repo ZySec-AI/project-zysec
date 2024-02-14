@@ -3,22 +3,19 @@ from bs4 import BeautifulSoup
 import html2text
 import re
 import os
-import streamlit as st
-from modules import app_constants
+from modules import app_constants, common_utils, app_logger
 import json
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
 import spacy
 from duckduckgo_search import DDGS
-from modules import common_utils
-from modules import app_logger
 nlp = spacy.load("en_core_web_sm")
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
 
 TMP_DIRECTORY = app_constants.WORKSPACE_DIRECTORY + 'tmp'
-DEFAULT_SEARCH_COUNT = app_constants.DEFAULT_SEARCH_COUNT
+DEFAULT_SEARCH_COUNT = app_constants.SEARCH_COUNT
 
 def download_and_clean(url):
     try:
@@ -43,7 +40,6 @@ def download_and_clean(url):
 
     except requests.exceptions.RequestException as e:
         app_logger.error(f"Error while downloading and cleaning URL {url}: {str(e)}")
-        st.error("Error while downloading and cleaning URL: " + str(e))
         return None
 
 def save_notes_to_file(topic, note, source_url):
@@ -114,7 +110,7 @@ def search_term_ddg(topic,count=DEFAULT_SEARCH_COUNT):
             streaming=True
         )
         prompt = [
-            SystemMessage(content="Generate 5 plain keywords in comma separated based on user input. For example ['word 1','word 2','word 3','word 4','word 5']"),
+            SystemMessage(content="Generate 5 plain keywords in comma separated based on user input. For example ['cat','bat','monkey','donkey','eagel']"),
             HumanMessage(content=topic),
         ]
         response = llm(prompt)
@@ -154,11 +150,10 @@ def explore_url_on_internet(topic, count=DEFAULT_SEARCH_COUNT):
 
     # Check if the file already exists
     if os.path.exists(full_path):
-        st.write("File already exists skipping download: ",full_path)
+        app_logger.info(f"File already exists skipping download: ",full_path)
         note_file = full_path
     else:
         url_list = search_term_ddg(topic,count)
         note_file = url_list_downloader(url_list, topic)
-    st.write(f"Research on Internet completed for {topic} here is your file", note_file)
     app_logger.info(f"Research on Internet completed for {topic}, file: {note_file}")
     return note_file

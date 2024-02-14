@@ -26,7 +26,7 @@ def query_llm(prompt, retriever=None, message_store=None, use_retrieval_chain=Fa
             )
             qa = RetrievalQAWithSourcesChain.from_chain_type(
                 llm=llm,
-                chain_type="refine",
+                chain_type=app_constants.RAG_TECHNIQUE,
                 retriever=retriever,
                 return_source_documents=False
             )

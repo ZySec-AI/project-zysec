@@ -28,8 +28,8 @@ def app(message_store):
     if research_button and topic:
         with st.spinner('Searching...'):
             try:
-                research_notes = app_researcher.explore_url_on_internet(topic, count=1)
-                app_to_vectorstore.get_chroma_index(research_notes, False)
+                research_notes = app_researcher.explore_url_on_internet(topic, count=app_constants.SEARCH_COUNT)
+                app_to_vectorstore.get_chroma_index(research_notes, is_persistent=False)
                 app_logger.info("Internet research completed successfully")
                 st.success("Internet research completed")
                 st.session_state['research_done'] = True
@@ -70,7 +70,7 @@ def app(message_store):
         st.chat_message("user").write(prompt)
         with st.spinner("Processing your request..."):
             if db_retriever:
-                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": 5}), message_store=st.session_state['message_store'],use_retrieval_chain=True)
+                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": app_constants.RAG_K}), message_store=st.session_state['message_store'],use_retrieval_chain=True)
                 st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
                 app_st_session_utils.add_message_to_session("user", prompt)
                 app_st_session_utils.add_message_to_session("assistant", formatted_response)

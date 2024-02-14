@@ -33,7 +33,16 @@ def update_processed_files_record(file_md5, file_path):
     except Exception as e:
         app_logger.error(f"Error updating processed files record: {e}")
 
-def get_chroma_index(file_path, is_persistent=True):
+
+def load_documents_from_jsonl(file_path, loader_class):
+    try:
+        loader = loader_class(file_path, json_lines=True, text_content=False, jq_schema='.')
+        return loader.load()
+    except Exception as e:
+        app_logger.error(f"Error loading documents from JSONL file {file_path}: {e}")
+        return None
+
+def get_chroma_index(file_path, current_page="nav_playbooks", is_persistent=True):
     app_logger.info(f"Starting get_chroma_index for {file_path}")
 
     _, file_extension = os.path.splitext(file_path)
@@ -48,11 +57,13 @@ def get_chroma_index(file_path, is_persistent=True):
     chunk_overlap = app_constants.CHUNK_OVERLAP
 
     storage_dir = DB_DIR if is_persistent else TEMP_DIR
-    base_filename = "local" if is_persistent else os.path.splitext(os.path.basename(file_path))[0]
+
+    # Append '_chroma_db' to the base filename, regardless of whether it's persistent or not
+    base_filename = f"{current_page}_chroma_db" if is_persistent else f"{os.path.splitext(os.path.basename(file_path))[0]}_chroma_db"
 
     # Sanitize the filename
     sanitized_base_filename = common_utils.sanitize_filename(base_filename)
-    chroma_persist_directory = os.path.join(storage_dir, f"{sanitized_base_filename}_chroma_db")
+    chroma_persist_directory = os.path.join(storage_dir, sanitized_base_filename)
 
     file_md5 = common_utils.compute_md5(file_path)
     app_logger.info(f"File {chroma_persist_directory} has processing started.")
@@ -61,15 +72,14 @@ def get_chroma_index(file_path, is_persistent=True):
         return None, False
 
     embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
-
     db = None
+
     try:
         if file_extension.lower() == '.jsonl':
-            loader = loader_class(file_path, json_lines=True, text_content=False, jq_schema='.')
+            documents = load_documents_from_jsonl(file_path, loader_class)
         else:
             loader = loader_class(file_path)
-
-        documents = loader.load()
+            documents = loader.load()
 
         if not documents:
             app_logger.error(f"No documents loaded from {file_path}.")
@@ -81,13 +91,14 @@ def get_chroma_index(file_path, is_persistent=True):
         if not docs:
             app_logger.error(f"No documents to process after splitting from {file_path}.")
             return None, False
-        
-        db = Chroma.from_documents(docs, embeddings, persist_directory=chroma_persist_directory,client_settings=app_constants.CHROMA_SETTINGS)
-        update_processed_files_record(file_md5,file_path)
+
+        db = Chroma.from_documents(docs, embeddings, persist_directory=chroma_persist_directory, client_settings=app_constants.CHROMA_SETTINGS)
+        update_processed_files_record(file_md5, file_path)
         app_logger.info("Created index and saved to disk")
         db.persist()
     except Exception as e:
         app_logger.error(f"Error in get_chroma_index for {file_path}: {e}")
         return None, False
+
     app_logger.info("Completed get_chroma_index operation")
     return db, True

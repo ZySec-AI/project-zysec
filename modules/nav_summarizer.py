@@ -11,7 +11,7 @@ from modules import app_page_definitions, app_logger,app_constants
 app_logger = app_logger.app_logger
 
 # Configurable batch size (4 pages per batch)
-batch_size = 4
+batch_size = app_constants.SUMMARIZER_BATCH
 WORKSPACE_DIRECTORY = app_constants.WORKSPACE_DIRECTORY
 
 def save_uploaded_file(uploaded_file, directory=WORKSPACE_DIRECTORY + "/tmp"):
