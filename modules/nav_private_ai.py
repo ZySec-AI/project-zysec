@@ -6,7 +6,7 @@ app_logger = app_logger.app_logger
 
 def app(message_store):
     app_logger.info("Starting Streamlit app - Private AI page")
-    st.title("🤖 Private AI")
+    st.title("Private AI")
     current_page = "nav_private_ai" 
 
     # Initialize or update session state variables
