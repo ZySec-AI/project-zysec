@@ -39,8 +39,8 @@ def main():
     with st.sidebar:
         selected = option_menu(
             "ZySec AI", 
-            ["Private AI", "Playbooks", "Standards", "Policies", "Summarizer", "Researcher", "About"], 
-            icons=["shield-lock", "book-half", "file-earmark-ruled", "journal-bookmark", "file-text", "search", "info-circle"], 
+            ["Private AI", "Playbooks", "Standards", "Policies", "Researcher", "Summarizer", "About"], 
+            icons=["shield-lock", "book-half", "file-earmark-ruled", "journal-bookmark", "search", "file-text", "info-circle"], 
             default_index=0, 
             menu_icon="cast", 
             styles={}

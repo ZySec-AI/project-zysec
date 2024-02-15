@@ -25,7 +25,7 @@ PAGE_CONFIG = {
         "system_role": "Embodying ZySec as a Research Assistant, developed by the ZySec AI team and author Venkatesh Siddi, you are tasked with providing in-depth research support and insights on various topics."
     },
     "nav_summarize": {
-        "title": "Efficient Summarization",
+        "title": "Summarization",
         "caption": "✍️ Transform extensive content into concise summaries effortlessly.",
         "greeting": "Hey there! ZySec here, your expert in content summarization.",
         "system_role": "In the role of ZySec, developed by the ZySec AI team and author Venkatesh Siddi, your focus is on distilling English content into clear, succinct summaries."
