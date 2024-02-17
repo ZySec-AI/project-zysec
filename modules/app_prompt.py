@@ -64,7 +64,7 @@ def query_llm(prompt, retriever=None, message_store=None, use_retrieval_chain=Fa
         # Process the response
         raw_msg = response.get('answer') if use_retrieval_chain else response.choices[0].message.content
         source_info = response.get('sources', '').strip() if use_retrieval_chain else ''
-        formatted_msg = app_st_session_utils.format_response(raw_msg +"\n\n" +"Source: " + source_info if source_info else raw_msg)
+        formatted_msg = app_st_session_utils.format_response(raw_msg + "\n\n(Source: " + source_info + ")" if source_info else raw_msg)
 
         # Adding the response to the session
         #app_st_session_utils.add_message_to_session("assistant", formatted_msg, page in app_constants.ENABLE_PAGE_HISTORY)

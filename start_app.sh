@@ -43,7 +43,7 @@ fi
 venv_path="zysec"
 if [ ! -d "$venv_path" ]; then
     echo "Creating virtual environment 'ZySec'..."
-    python -m venv $venv_path
+    python3 -m venv $venv_path
 fi
 
 echo "Activating virtual environment 'ZySec'..."
@@ -53,7 +53,7 @@ source $venv_path/bin/activate
 if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == *"$venv_path" ]]; then
     echo "Now in the 'ZySec' virtual environment."
     # Install requirements
-    pip install -r requirements.txt -q
+    pip3 install -r requirements.txt -q
 else
     echo "Failed to activate 'ZySec' virtual environment. Exiting."
     exit 1
