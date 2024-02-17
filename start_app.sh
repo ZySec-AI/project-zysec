@@ -53,7 +53,7 @@ source $venv_path/bin/activate
 if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == *"$venv_path" ]]; then
     echo "Now in the 'ZySec' virtual environment."
     # Install requirements
-    pip install -r requirements.txt
+    pip install -r requirements.txt -q
 else
     echo "Failed to activate 'ZySec' virtual environment. Exiting."
     exit 1
@@ -61,13 +61,19 @@ fi
 
 # Function to start or restart the model server
 start_model_server() {
-    while true; do
-        echo "Starting model server..."
-        python3 -m llama_cpp.server --model "./$model_path" --n_batch 4 --n_ctx 8196 --n_batch 200 --verbose true --n_gpu_layers 50 --chat_format zephyr &
-        server_pid=$!
-        wait $server_pid
-        echo "Model server stopped unexpectedly. Restarting..."
-    done
+    # Check if port 8000 is already in use
+    if lsof -i:8000 -sTCP:LISTEN -t >/dev/null ; then
+        echo "Port 8000 is already in use. Assuming the model server is running."
+        return
+    fi
+
+    echo "Starting model server..."
+    python3 -m llama_cpp.server --model "./$model_path" --n_batch 4 --n_ctx 8196 --n_batch 200 --verbose true --n_gpu_layers 50 --chat_format zephyr &
+    server_pid=$!
+    wait $server_pid
+
+    echo "Model server stopped. Exiting."
+    exit 1
 }
 
 # Step 4: Start model server in the background
