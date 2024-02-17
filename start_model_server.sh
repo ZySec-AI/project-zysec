@@ -2,7 +2,7 @@
 
 # Define the model directory and file name
 model_dir="models/aihub-app"
-model_file="ZySec-7B-v1.Q2_K.gguf"
+model_file="ZySec-7B-v1.Q4_K_M.gguf"
 model_path="$model_dir/$model_file"
 
 # Check if the directory exists and create it if it does not
