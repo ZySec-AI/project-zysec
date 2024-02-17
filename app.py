@@ -70,7 +70,7 @@ def main():
             pass
 
     except Exception as e:
-        st.error(f"An error occurred: {e}")
+        st.error(f"Looks like there's a gap here; maybe we forgot to add some data!: {e}")
 
 if __name__ == "__main__":
     main()
