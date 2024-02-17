@@ -23,7 +23,7 @@ def app(message_store):
     st.caption(page_config["caption"])
 
     topic = st.text_input("Enter Topic for Research", "Threat Management")
-    research_button = st.button("Go Research")
+    research_button = st.button("Go Research on Internet")
 
     if research_button and topic:
         with st.spinner('Searching...'):
@@ -45,7 +45,7 @@ def app(message_store):
     name_to_file_map = dict(zip(formatted_db_names, db_files))
 
     # Display formatted names in the dropdown and use the selection to get the actual file name
-    selected_db_formatted = st.selectbox("Pick Research Topic", formatted_db_names)
+    selected_db_formatted = st.selectbox("Pick Researched topic from drop-down and start chatting!", formatted_db_names)
     selected_db_actual = name_to_file_map[selected_db_formatted]
     research_notes = TEMP_DIR + '/' + selected_db_actual
 

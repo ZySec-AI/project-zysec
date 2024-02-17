@@ -122,7 +122,7 @@ def search_term_ddg(topic,count=DEFAULT_SEARCH_COUNT):
         
         # Splitting and trimming the keywords
         search_keywords = [keyword.strip() for keyword in search_keywords.split(',')]
-        print(search_keywords)
+        #print(search_keywords)
         # Limiting keywords to a maximum of 8
         search_keywords = search_keywords[:8]
 

@@ -31,7 +31,7 @@ def log_session_info(message):
     try:
         app_logger.info(message)
     except Exception as e:
-        print(f"Logging error: {e}")
+        app_logger.error(f"Logging error: {e}")
 
 def display_page_greeting(page_key, username):
     """Display a greeting message for a specific page."""
@@ -86,7 +86,7 @@ def initialize_or_retrieve_db(db_path):
     Returns:
     The initialized or retrieved database object.
     """
-    print("initializing db", db_path)
+    app_logger.info("initializing db", db_path)
     if 'db_retriever' not in st.session_state or st.session_state['db_path'] != db_path:
         # Database not initialized or path has changed
         db_retriever = database_utils.initialize_chroma_db(db_path)
