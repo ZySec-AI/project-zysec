@@ -10,8 +10,9 @@ app_logger = app_logger.app_logger
 openai_api_key = os.environ.get("OPENAI_API_KEY", "NONE")
 
 # Set default values if environment variables are not found
-mongodb_uri = os.environ.get("MONGODB_URI", "mongodb://localhost:27017")
+#mongodb_uri = os.environ.get("MONGODB_URI", "mongodb://localhost:27017")
 local_model_uri = os.environ.get("LOCAL_OPENAI_URI", "http://localhost:8000/v1")
+#local_model_uri = os.environ.get("LOCAL_OPENAI_URI", None)
 DOCUMENT_MAP = {
     ".html": UnstructuredHTMLLoader,
     ".txt": TextLoader,
@@ -28,7 +29,7 @@ DOCUMENT_MAP = {
 }
 MODELS_PATH = "./models"
 EMBEDDING_MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
-MODEL_NAME = ''
+MODEL_NAME = 'gpt-3.5-turbo'
 # Constants
 WORKSPACE_DIRECTORY = './workspace/'
 

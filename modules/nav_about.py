@@ -1,7 +1,5 @@
-import time
 from . import app_constants
 import streamlit as st
-import os
 from modules import app_ai_model
 from modules import app_logger,common_utils
 from modules import app_st_session_utils
@@ -13,27 +11,36 @@ app_logger = app_logger.app_logger
 def app():
     app_logger.info("Starting Streamlit app - Configuration Tool")
     
-    # Title and Description for System Controls Section
     st.title("⚙️ System Controls")
-    st.caption("Here you can manage and control system settings. This includes configuring database connections, selecting AI models, and executing operational commands for the application.")
+    st.caption("Manage and control system settings including AI model configurations.")
 
-    current_page = "nav_about"  # Example current page
+    # Dropdown for AI Model Source Selection
+    st.subheader("AI Model Source")
+    st.write("Choose a model to get started. If you're limited by system resources, no worries! You can also use the OpenAI API. Simply obtain your API key and enjoy using the ZySec tool with ease.")
+    model_source = st.selectbox("Select Model Source", ["OpenAI Endpoint", "Private Endpoint"])
 
-    # Initialize Session State
-    if 'current_page' not in st.session_state:
-        st.session_state['current_page'] = current_page
-        st.session_state['page_loaded'] = False
-        app_logger.info("Initialized session for about page.")
-
-    # System Controls Expander
-    with st.expander("System Controls"):
-        # App Configuration
-        st.subheader("App Configuration")
-        st.text_input("MongoDB Connection String", type="password", value=app_constants.mongodb_uri)
-        st.text_input("OpenAI Compatible URL", value=app_constants.local_model_uri)
+    # Conditional Input Fields based on Model Source Selection
+    if model_source == "OpenAI Endpoint":
+        openai_api_key = st.text_input("OpenAI API Key", type="password", value=app_constants.openai_api_key)
+        st.markdown(
+            "Need an OpenAI API key? [Get it here](https://platform.openai.com/api-keys).", 
+            unsafe_allow_html=True
+        )
+    else:
+        local_model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible)", value=app_constants.local_model_uri)
         models = app_ai_model.list_huggingface_models()
         if models:
             selected_model = st.selectbox("Select a Model", models)
+
+    # Button to Update Configurations
+    if st.button("Update Configuration"):
+        if model_source == "OpenAI Endpoint":
+            app_constants.openai_api_key = openai_api_key  # Update the OpenAI API key
+            app_constants.local_model_uri = None  # Set base URL to None for OpenAI
+            st.success("OpenAI configuration updated.")
+        else:
+            app_constants.local_model_uri = local_model_uri  # Update the Local Model URI
+            st.success("Local model configuration updated.")
         
         # Session and Data Reset
         st.subheader("Session and Data Management")
