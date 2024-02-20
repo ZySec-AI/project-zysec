@@ -107,16 +107,11 @@ def app():
         """, unsafe_allow_html=True)
 
         # Session and Data Reset
-    st.subheader("Session and Data Management")
+    st.subheader("Clear Session")
     if st.button("Reset Session"):
         # Clear all items from the session state
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         # Reload the page to reflect the session reset
         app_st_session_utils.reload_page()
-
-    if st.button("Reset Data"):
-        common_utils.delete_files()
-        app_logger.info("Data reset successfully.")
-        st.success("Data reset successfully.")
         st.rerun()
