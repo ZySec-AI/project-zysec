@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 # Import your page modules
-from modules import nav_about, nav_private_ai, nav_query_docs, nav_researcher, nav_summarizer, nav_file_manager
+from modules import nav_about, nav_query_docs, nav_researcher, nav_summarizer, nav_file_manager
 from modules import app_constants, app_logger, common_utils
 from modules.message_store import MessageStore
 
@@ -53,13 +53,14 @@ def main():
 
 
         if selected == "Private AI":
-            nav_private_ai.app(message_store)
+            #nav_private_ai.app(message_store)
+            nav_query_docs.app(message_store,current_page="nav_private_ai")
         elif selected == "Playbooks":
-            nav_query_docs.app(message_store)
+            nav_query_docs.app(message_store,current_page="nav_playbooks",use_retrieval_chain=True)
         elif selected == "Standards":
-            nav_query_docs.app(message_store,current_page="nav_standards")
+            nav_query_docs.app(message_store,current_page="nav_standards",use_retrieval_chain=True)
         elif selected == "Policies":
-            nav_query_docs.app(message_store,current_page="nav_policies")
+            nav_query_docs.app(message_store,current_page="nav_policies",use_retrieval_chain=True)
         elif selected == "Researcher":
             nav_researcher.app(message_store)
         elif selected == "Summarizer":

@@ -193,6 +193,7 @@ def update_file_statuses(file_data, system_content_file):
     if status_updated:
         save_file_metadata(file_data, system_content_file)
 
+#operation not used now, but will use in future.
 def perform_file_operation(filename, operation):
     # Load the JSON file data
     try:

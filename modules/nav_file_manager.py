@@ -68,9 +68,11 @@ def app():
 
             with col4:
                 enable_key = f"enable_{idx}"
-                file_path = file_entry["local_path"]
-                file_exists = os.path.exists(file_path)
-
+                try:
+                    file_path = file_entry["local_path"]
+                    file_exists = os.path.exists(file_path)
+                except:
+                    pass
                 if file_exists:
                     indexed_status = file_entry.get("indexed_status", False)
                     print(file_path,indexed_status)
@@ -120,7 +122,7 @@ def app():
         file_utils.save_file_metadata(file_data, system_content_file)
         file_data = file_utils.load_file_metadata(system_content_file)  # Reload file metadata after update
 
-    st.write("Using below clear option you can clear all data in the system!")
+    st.write("Using below clear option, you can clear all data in the system and start fresh to index and upload information!")
     if st.button("Clear Data"):
         file_utils.delete_files()
         st.write("All data cleared.")
