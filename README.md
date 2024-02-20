@@ -31,14 +31,6 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
 
 - [🔗 Checkout Model on HuggingFace](https://huggingface.co/aihub-app/ZySec-7B-v1)
 
-### About the Author - Venkatesh Siddi
-
-**Venkatesh Siddi** is a notable expert in cybersecurity, integrating **Artificial Intelligence and Machine Learning** into complex security challenges. His expertise extends to big data, cloud security, and innovative technology design.
-
-- [🔗 Connect with Venkatesh on LinkedIn](https://www.linkedin.com/in/venkycs/)
-
-</details>
-
 ## Deployment Options
 
 You have the flexibility to run the ZySec AI application either locally on your computer or remotely on a GPU instance, depending on your preferences and resource availability.
@@ -94,3 +86,11 @@ ZySec AI is released under the Apache License, Version 2.0 (Apache-2.0), a permi
 ## Acknowledgements
 
 Special thanks to the HuggingFace and LangChain communities for their inspiration and contributions to the field of AI. Their pioneering work continues to inspire projects like ZySec AI.
+
+### About the Author - Venkatesh Siddi
+
+**Venkatesh Siddi** is a notable expert in cybersecurity, integrating **Artificial Intelligence and Machine Learning** into complex security challenges. His expertise extends to big data, cloud security, and innovative technology design.
+
+- [🔗 Connect with Venkatesh on LinkedIn](https://www.linkedin.com/in/venkycs/)
+
+</details>
