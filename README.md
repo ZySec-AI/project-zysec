@@ -39,25 +39,51 @@ ZySec AI leads the charge in integrating **Cyber Security with Artificial Intell
 
 </details>
 
+## Deployment Options
+
+You have the flexibility to run the ZySec AI application either locally on your computer or remotely on a GPU instance, depending on your preferences and resource availability.
+
+- **Local Deployment:** Suitable for development, testing, or light usage. Follow the instructions in the previous sections to set up and run the application on your local machine.
+
+- **Remote Deployment on a GPU Instance:** For better performance, especially when handling larger workloads or requiring faster processing, consider deploying on a GPU instance. Use the VLLM (Very Large Language Model) deployment mode for optimal performance in a GPU environment.
+
+  Here is the model that can be deployed on a GPU instance for enhanced performance: [ZySec-7B-v1 on Hugging Face](https://huggingface.co/aihub-app/ZySec-7B-v1). This model is specifically optimized for GPU-based deployments and offers significant performance improvements over CPU-based setups.
+
+### Notes
+
+- Ensure that the remote GPU instance has the necessary hardware requirements and software dependencies installed.
+- Adjust the deployment scripts (`start_web_ui.sh` and `start_model_server.sh`) as needed to suit the remote environment, particularly for handling GPU resources.
+- Test the application thoroughly in the GPU environment to ensure stability and performance meet your expectations.
+
+
 ## Getting Started
 
 ### Setting Up the Streamlit Application
 
 1. **Clone the Repository:** Start by cloning the ZySec AI repository from GitHub to your local machine.
 
-      Clone the project
+   Clone the project
 
       ```bash
       git clone https://github.com/ZySec-AI/ZySec.git
-      ```
-2. **Install Dependencies and run with script:**
+
+2. **Install Dependencies and Run the Web UI:** Navigate to the cloned directory, set the script as executable, and run it to start the Streamlit application.
+
       ```bash
-    cd ZySec
-    chmod +x start_app.sh
-    ./start_app.sh
-      ```
-3. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
-4. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
+      cd ZySec
+      chmod +x start_web_ui.sh
+      ./start_web_ui.sh
+
+3. **Starting the Model Server**: Before running the model server, ensure that the llama-cpp-server is installed. You can install it using pip:
+      ```bash
+      pip3 install 'llama-cpp-python[server]'
+      chmod +x start_model_server.sh
+      ./start_model_server.sh
+
+***You can run locally on the same computer or remotely on GPU instance depending on your preferences. For better performance use VLLM deployment mode in GPU instance.***
+
+4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
+5. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
 
 ## License
 
