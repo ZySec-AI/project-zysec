@@ -10,11 +10,6 @@ Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project 
 4. **Standards Explorer:** Quickly search and access various standards, like a expert well-versed with any standards.
 5. **Ongoing Internet Research:** Benefit from AI-enabled extensive internet research for comprehensive insights (Note: Internet use is optional and for this feature only).
 
-## About ZySec AI and the Author
-
-<details>
-<summary>About Project ZySec AI</summary>
-
 ### About ZySec AI
 
 ZySec AI leads the charge in integrating **Cyber Security with Artificial Intelligence**. Our vision is to transform how security professionals leverage technology. ZySec AI is more than just a tool; it is a holistic approach to enhancing security operations, merging AI's innovative power with the unique challenges of cybersecurity, while prioritizing privacy.
@@ -76,6 +71,11 @@ You have the flexibility to run the ZySec AI application either locally on your 
 
 4. **Explore the Application:** Interact with the various features of ZySec AI through the Streamlit interface.
 5. **Contributing:** For those interested in contributing, please refer to our contact page for more information.
+
+## About ZySec AI and the Author
+
+<details>
+<summary>About Project ZySec AI</summary>
 
 ## License
 
