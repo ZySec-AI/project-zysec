@@ -20,8 +20,8 @@ def app(message_store, current_page="nav_private_ai", use_retrieval_chain=False)
     app_st_session_utils.initialize_session_state('message_store', message_store)
     db_retriever_playbooks = False
     if use_retrieval_chain:
+        db_retriever_playbooks = True
         # Initialize or retrieve the database
-        persistent_db = page_config.get("persistent_db", app_constants.LOCAL_PERSISTANT_DB)
         persistent_db = app_constants.LOCAL_PERSISTANT_DB + current_page + '_chroma_db'
         db_retriever_playbooks = app_st_session_utils.initialize_or_retrieve_db(persistent_db)
 
