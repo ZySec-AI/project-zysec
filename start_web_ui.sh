@@ -25,5 +25,7 @@ else
 fi
 
 # Step 5: Start the Streamlit app
+echo "Assuming model instance is running.. you can start it or review settings in about section to connect to remote instance."
 echo "Starting Streamlit app..."
 streamlit run app.py
+
