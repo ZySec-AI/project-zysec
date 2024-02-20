@@ -4,7 +4,7 @@ import json
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
-from modules import common_utils
+from modules import common_utils,file_utils
 from modules import app_logger
 # Assuming all necessary loader classes are imported
 
@@ -62,12 +62,12 @@ def get_chroma_index(file_path, current_page="nav_playbooks", is_persistent=True
     base_filename = f"{current_page}_chroma_db" if is_persistent else f"{os.path.splitext(os.path.basename(file_path))[0]}_chroma_db"
 
     # Sanitize the filename
-    sanitized_base_filename = common_utils.sanitize_filename(base_filename)
+    sanitized_base_filename = file_utils.sanitize_filename(base_filename)
     chroma_persist_directory = os.path.join(storage_dir, sanitized_base_filename)
 
-    file_md5 = common_utils.compute_md5(file_path)
+    file_md5 = file_utils.compute_md5(file_path)
     app_logger.info(f"File {chroma_persist_directory} has processing started.")
-    if file_md5 and common_utils.is_file_processed(file_md5):
+    if file_md5 and file_utils.is_file_processed(file_md5):
         app_logger.info(f"File {file_path} has already been processed. Skipping.")
         return None, False
 

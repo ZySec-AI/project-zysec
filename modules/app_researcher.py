@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import html2text
 import re
 import os
-from modules import app_constants, common_utils, app_logger
+from modules import app_constants, file_utils, app_logger
 import json
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
@@ -51,7 +51,7 @@ def save_notes_to_file(topic, note, source_url):
         os.makedirs(TMP_DIRECTORY)
 
     # Sanitize the filename and create the full path
-    sanitized_filename = common_utils.sanitize_filename(topic)+'.jsonl'
+    sanitized_filename = file_utils.sanitize_filename(topic)+'.jsonl'
     full_path = os.path.join(TMP_DIRECTORY, sanitized_filename)
 
     # Initialize variables for accumulating sentences
@@ -145,7 +145,7 @@ def search_term_ddg(topic,count=DEFAULT_SEARCH_COUNT):
 def explore_url_on_internet(topic, count=DEFAULT_SEARCH_COUNT):
     app_logger.info(f"Starting research on topic {topic}")
     # Sanitize the filename and create the full path
-    sanitized_filename = common_utils.sanitize_filename(topic)+'.jsonl'
+    sanitized_filename = file_utils.sanitize_filename(topic)+'.jsonl'
     full_path = os.path.join(TMP_DIRECTORY, sanitized_filename)
 
     # Check if the file already exists

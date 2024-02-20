@@ -1,8 +1,8 @@
 from . import app_constants
 import streamlit as st
-from modules import app_ai_model
+from modules import file_utils
 from modules import app_logger,common_utils
-from modules import app_st_session_utils
+from modules import app_st_session_utils, app_page_definitions
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
@@ -10,9 +10,13 @@ app_logger = app_logger.app_logger
 
 def app():
     app_logger.info("Starting Streamlit app - Configuration Tool")
-    
-    st.title("⚙️ System Controls")
-    st.caption("Manage and control system settings including AI model configurations.")
+    current_page = "nav_about"
+    # Fetch page configuration from app_page_definitions
+    page_config = app_page_definitions.PAGE_CONFIG.get(current_page, app_page_definitions.PAGE_CONFIG["default"])
+
+    # Use configurations for title, caption, and greeting from page_config
+    st.title(page_config["title"])
+    st.caption(page_config["caption"])
 
     # Dropdown for AI Model Source Selection
     st.subheader("AI Model Source")
@@ -28,7 +32,7 @@ def app():
         )
     else:
         local_model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible)", value=app_constants.local_model_uri)
-        models = app_ai_model.list_huggingface_models()
+        models = file_utils.list_huggingface_models()
         if models:
             selected_model = st.selectbox("Select a Model", models)
 

@@ -50,3 +50,5 @@ RAG_TECHNIQUE = 'refine'
 SUMMARIZER_BATCH = 4
 MAX_FILE_SIZE = 10
 LOCAL_PERSISTANT_DB = WORKSPACE_DIRECTORY + "db/"
+CONTENT_TYPE = ["Select Type","Policies", "Playbooks", "Standards", "Breaches", "Other"]
+SYSTEM_CONTENT_DATA = "app-content.json"

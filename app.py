@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 # Import your page modules
-from modules import nav_about, nav_private_ai, nav_query_docs, nav_researcher, nav_summarizer 
+from modules import nav_about, nav_private_ai, nav_query_docs, nav_researcher, nav_summarizer, nav_file_manager
 from modules import app_constants, app_logger, common_utils
 from modules.message_store import MessageStore
 
@@ -39,8 +39,8 @@ def main():
     with st.sidebar:
         selected = option_menu(
             "ZySec AI", 
-            ["Private AI", "Playbooks", "Standards", "Policies", "Researcher", "Summarizer", "About"], 
-            icons=["shield-lock", "book-half", "file-earmark-ruled", "journal-bookmark", "search", "file-text", "info-circle"], 
+            ["Private AI", "Playbooks", "Standards", "Policies", "Researcher", "Summarizer","Files", "About"], 
+            icons=["shield-lock", "book-half", "file-earmark-ruled", "journal-bookmark", "search", "file-text","files", "info-circle"], 
             default_index=0, 
             menu_icon="cast", 
             styles={}
@@ -64,6 +64,8 @@ def main():
             nav_researcher.app(message_store)
         elif selected == "Summarizer":
             nav_summarizer.app()
+        elif selected == "Files":
+            nav_file_manager.app()
         elif selected == "About":
             nav_about.app()
         else:

@@ -1,0 +1,48 @@
+[
+    {
+        "name": "Framework for Improving Critical Infrastructure Cybersecurity",
+        "url": "https://nvlpubs.nist.gov/nistpubs/cswp/nist.cswp.04162018.pdf",
+        "downloaded_status": true,
+        "local_path": "./workspace/docs/nist.cswp.04162018.pdf",
+        "indexed_status": true,
+        "last_downloaded": null,
+        "file_size": null,
+        "content_type": "Framework"
+    },
+    {
+        "name": "Towards a Standard for Identifying and Managing Bias in Artificial Intelligence",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1270.pdf",
+        "downloaded_status": false,
+        "local_path": "./workspace/docs/nist.sp.1270.pdf",
+        "indexed_status": false,
+        "last_downloaded": "2024-01-15T14:30:00Z",
+        "file_size": 2048000,
+        "content_type": "Standard"
+    },
+    {
+        "name": "Digital Identity Guidelines",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63-3.pdf",
+        "downloaded_status": true,
+        "local_path": "./workspace/docs/nist.sp.800-63-3.pdf",
+        "indexed_status": true,
+        "last_downloaded": "2024-02-20T09:00:00Z",
+        "file_size": 1024000,
+        "content_type": "Policy"
+    },
+    {
+        "name": "cv_venkatesh.siddi.pdf",
+        "url": "./workspace/docs/cv_venkatesh.siddi.pdf",
+        "downloaded_status": true,
+        "local_path": "./workspace/docs/cv_venkatesh.siddi.pdf",
+        "indexed_status": true,
+        "content_type": "Playbooks"
+    },
+    {
+        "name": "cv_venkatesh.siddi.pdf",
+        "url": "./workspace/docs/cv_venkatesh.siddi.pdf",
+        "downloaded_status": true,
+        "local_path": "./workspace/docs/cv_venkatesh.siddi.pdf",
+        "indexed_status": false,
+        "content_type": "Playbooks"
+    }
+]
