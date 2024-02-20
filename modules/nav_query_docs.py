@@ -1,6 +1,6 @@
 import streamlit as st
 from modules import app_logger, app_page_definitions, app_prompt, app_constants, app_st_session_utils
-
+import time
 # Use the logger from app_config
 app_logger = app_logger.app_logger
 
@@ -45,6 +45,7 @@ def app(message_store, current_page="nav_private_ai", use_retrieval_chain=False)
     if prompt:
         st.chat_message("user").write(prompt)
         app_logger.info(f"Processed user prompt: {prompt}")
+        start_time = time.time()
         with st.spinner("Processing request..."):
             if use_retrieval_chain:
                 if db_retriever_playbooks:
@@ -59,3 +60,6 @@ def app(message_store, current_page="nav_private_ai", use_retrieval_chain=False)
                 st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
                 app_st_session_utils.add_message_to_session("user", prompt)
                 app_st_session_utils.add_message_to_session("assistant", formatted_response)
+        end_time = time.time()  # End timing
+        processing_time = end_time - start_time  # Calculate processing time
+        st.info(f"Processing time: {processing_time:.2f} seconds")  # Log processing time

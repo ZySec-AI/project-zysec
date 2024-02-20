@@ -1,122 +1,18 @@
 [
     {
-        "name": "ISO/IEC 27001 - Information Security Management",
-        "url": "https://www.google.com/search?q=ISO+IEC+27001",
-        "content_type": "Standard"
+        "name": "Digital Identity Guidelines",
+        "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63-3.pdf",
+        "downloaded_status": true,
+        "local_path": "./workspace/docs/nist.sp.800-63-3.pdf",
+        "indexed_status": true,
+        "content_type": "Standards"
     },
     {
-        "name": "ISO/IEC 27002 - Code of Practice for Information Security Controls",
-        "url": "https://www.google.com/search?q=ISO+IEC+27002",
-        "content_type": "Standard"
-    },
-    {
-        "name": "ISO/IEC 27005 - Information Security Risk Management",
-        "url": "https://www.google.com/search?q=ISO+IEC+27005",
-        "content_type": "Standard"
-    },
-    {
-        "name": "ISO/IEC 27017 - Cloud Security",
-        "url": "https://www.google.com/search?q=ISO+IEC+27017",
-        "content_type": "Standard"
-    },
-    {
-        "name": "ISO/IEC 27018 - Protection of Personal Data in the Cloud",
-        "url": "https://www.google.com/search?q=ISO+IEC+27018",
-        "content_type": "Standard"
-    },
-    {
-        "name": "ISO/IEC 27032 - Cybersecurity",
-        "url": "https://www.google.com/search?q=ISO+IEC+27032",
-        "content_type": "Standard"
-    },
-    {
-        "name": "ISO/IEC 27035 - Information Security Incident Management",
-        "url": "https://www.google.com/search?q=ISO+IEC+27035",
-        "content_type": "Standard"
-    },
-    {
-        "name": "ISO/IEC 27701 - Privacy Information Management",
-        "url": "https://www.google.com/search?q=ISO+IEC+27701",
-        "content_type": "Standard"
-    },
-    {
-        "name": "NIST Special Publication 800-53 - Security and Privacy Controls for Information Systems and Organizations",
-        "url": "https://www.google.com/search?q=NIST+SP+800-53",
-        "content_type": "Policy"
-    },
-    {
-        "name": "NIST Cybersecurity Framework",
-        "url": "https://www.google.com/search?q=NIST+Cybersecurity+Framework",
-        "content_type": "Framework"
-    },
-    {
-        "name": "NIST Special Publication 800-171 - Protecting Controlled Unclassified Information in Nonfederal Systems and Organizations",
-        "url": "https://www.google.com/search?q=NIST+SP+800-171",
-        "content_type": "Standard"
-    },
-    {
-        "name": "NIST Special Publication 800-61 - Computer Security Incident Handling Guide",
-        "url": "https://www.google.com/search?q=NIST+SP+800-61",
-        "content_type": "Guide"
-    },
-    {
-        "name": "NIST Special Publication 800-30 - Guide for Conducting Risk Assessments",
-        "url": "https://www.google.com/search?q=NIST+SP+800-30",
-        "content_type": "Guide"
-    },
-    {
-        "name": "CIS Controls",
-        "url": "https://www.google.com/search?q=CIS+Controls",
-        "content_type": "Framework"
-    },
-    {
-        "name": "CIS Benchmarks",
-        "url": "https://www.google.com/search?q=CIS+Benchmarks",
-        "content_type": "Benchmark"
-    },
-    {
-        "name": "PCI DSS - Payment Card Industry Data Security Standard",
-        "url": "https://www.google.com/search?q=PCI+DSS",
-        "content_type": "Standard"
-    },
-    {
-        "name": "HIPAA - Health Insurance Portability and Accountability Act",
-        "url": "https://www.google.com/search?q=HIPAA",
-        "content_type": "Act"
-    },
-    {
-        "name": "GDPR - General Data Protection Regulation",
-        "url": "https://www.google.com/search?q=GDPR",
-        "content_type": "Regulation"
-    },
-    {
-        "name": "FISMA - Federal Information Security Management Act",
-        "url": "https://www.google.com/search?q=FISMA",
-        "content_type": "Act"
-    },
-    {
-        "name": "SOX - Sarbanes-Oxley Act",
-        "url": "https://www.google.com/search?q=SOX+Act",
-        "content_type": "Act"
-    },
-    {
-        "name": "COBIT - Control Objectives for Information and Related Technologies",
-        "url": "https://www.google.com/search?q=COBIT",
-        "content_type": "Framework"
-    },
-    {
-        "name": "ITIL - Information Technology Infrastructure Library",
-        "url": "https://www.google.com/search?q=ITIL",
-        "content_type": "Framework"
-    },
-    {
-        "name": "OWASP Top Ten",
-        "url": "https://www.google.com/search?q=OWASP+Top+Ten",
-        "content_type": "List"
-    },
-    {
-        "name": "SANS Top 20 Critical Security Controls",
-        "url": "https://www.google.com/search?q=SANS+Top+20",
-        "content_type": "List"
+        "name": "OWASP Top 10 for LLM Applications",
+        "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-2023-v1_0_1.pdf",
+        "downloaded_status": true,
+        "local_path": "./workspace/docs/owasp-top-10-for-llms-2023-v1_0_1.pdf",
+        "indexed_status": true,
+        "content_type": "References"
     }
 ]

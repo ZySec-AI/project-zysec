@@ -11,6 +11,7 @@ import re
 app_logger = app_logger.app_logger
 work_dir = app_constants.WORKSPACE_DIRECTORY
 processed_files_record = os.path.join(app_constants.WORKSPACE_DIRECTORY, app_constants.VECTORSTORE_PROCESSED_RECORDS)
+system_content_file = metadata_path=app_constants.SYSTEM_CONTENT_DATA
 
 def list_huggingface_models():
     models_dir = './models'
@@ -29,15 +30,15 @@ def list_huggingface_models():
 
     return models
 
-def download_file(url, local_path, metadata_path):
+def download_file(url, local_path, metadata_path=system_content_file):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        
+        #print(url,local_path,metadata_path)
         # Extract and sanitize the filename from the URL
         sanitized_filename = sanitize_filename(url.split('/')[-1])
         sanitized_local_path = os.path.join(os.path.dirname(local_path), sanitized_filename)
-
+        #print(sanitized_local_path)
         with open(sanitized_local_path, 'wb') as f:
             f.write(response.content)
         app_logger.info(f"File downloaded successfully: {sanitized_local_path}")
@@ -49,7 +50,7 @@ def download_file(url, local_path, metadata_path):
         app_logger.error(f"Failed to download file from {url}. Error: {e}")
         return False
 
-def save_file_metadata(metadata, metadata_path):
+def save_file_metadata(metadata, metadata_path=system_content_file):
     try:
         with open(metadata_path, 'w') as file:
             json.dump(metadata, file, indent=4)
@@ -57,7 +58,7 @@ def save_file_metadata(metadata, metadata_path):
     except Exception as e:
         app_logger.error(f"Failed to save metadata. Error: {e}")
 
-def load_file_metadata(metadata_path):
+def load_file_metadata(metadata_path=system_content_file):
     try:
         if os.path.exists(metadata_path):
             with open(metadata_path, 'r') as file:
@@ -154,7 +155,7 @@ def save_uploaded_file(uploaded_file, uploads_path, sanitized_filename=None):
     app_logger.info(f"File '{sanitized_filename}' uploaded to {uploads_path}")
     return file_path
 
-def update_file_status_in_metadata(file_path, status_key, status_value, metadata_path):
+def update_file_status_in_metadata(file_path, status_key, status_value, metadata_path=app_constants.SYSTEM_CONTENT_DATA):
     metadata = load_file_metadata(metadata_path)
     for file in metadata:
         if file['local_path'] == file_path:
@@ -162,7 +163,7 @@ def update_file_status_in_metadata(file_path, status_key, status_value, metadata
             save_file_metadata(metadata, metadata_path)
             break
 
-def delete_specific_file(file_name, metadata_path):
+def delete_specific_file(file_name, metadata_path=system_content_file):
     try:
         file_path = os.path.join(work_dir, 'docs', file_name)
         if os.path.exists(file_path):
@@ -177,7 +178,7 @@ def delete_specific_file(file_name, metadata_path):
     except Exception as e:
         app_logger.error(f"Error deleting file '{file_name}'. Error: {e}")
 
-def update_file_statuses(file_data, system_content_file):
+def update_file_statuses(file_data):
     status_updated = False
     for file_entry in file_data:
         # Extract the sanitized filename from the local_path
@@ -191,7 +192,7 @@ def update_file_statuses(file_data, system_content_file):
             status_updated = True
 
     if status_updated:
-        save_file_metadata(file_data, system_content_file)
+        save_file_metadata(file_data)
 
 #operation not used now, but will use in future.
 def perform_file_operation(filename, operation):
