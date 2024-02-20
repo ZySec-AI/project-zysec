@@ -1,8 +1,8 @@
 from . import app_constants
 import streamlit as st
-from modules import app_ai_model
+from modules import file_utils
 from modules import app_logger,common_utils
-from modules import app_st_session_utils
+from modules import app_st_session_utils, app_page_definitions
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
@@ -10,53 +10,76 @@ app_logger = app_logger.app_logger
 
 def app():
     app_logger.info("Starting Streamlit app - Configuration Tool")
-    
-    st.title("⚙️ System Controls")
-    st.caption("Manage and control system settings including AI model configurations.")
+    current_page = "nav_about"
+    # Fetch page configuration from app_page_definitions
+    page_config = app_page_definitions.PAGE_CONFIG.get(current_page, app_page_definitions.PAGE_CONFIG["default"])
 
-    # Dropdown for AI Model Source Selection
-    st.subheader("AI Model Source")
-    st.write("Choose a model to get started. If you're limited by system resources, no worries! You can also use the OpenAI API. Simply obtain your API key and enjoy using the ZySec tool with ease.")
-    model_source = st.selectbox("Select Model Source", ["OpenAI Endpoint", "Private Endpoint"])
+    # Use configurations for title, caption, and greeting from page_config
+    st.title(page_config["title"])
+    st.caption(page_config["caption"])
 
-    # Conditional Input Fields based on Model Source Selection
-    if model_source == "OpenAI Endpoint":
-        openai_api_key = st.text_input("OpenAI API Key", type="password", value=app_constants.openai_api_key)
+
+    # Subheader for Server Mode Selection
+    st.subheader("Server Mode Selection")
+    mode_to_index = {"private": 0, "demo": 1, "openai": 2}
+    default_index = mode_to_index.get(app_constants.SYSTEM_DEPLOYMENT_MODE, 0)  # Default to "Local" if not found
+    # Radio buttons for selecting the server mode
+    server_mode = st.radio("Select Server Mode", ["Private", "ZySec Remote", "OpenAI"],index=default_index)
+
+    # Initialize variables for settings
+    local_model_uri, remote_model_uri, openai_api_key = None, None, None
+
+    # Conditional rendering of settings and their descriptions based on the selected server mode
+    if server_mode == "Private":
+        st.markdown("### Local Settings")
+        st.markdown("""
+        **Private Mode** is for running the model directly on your machine or on a local server. 
+        This mode is ideal if you have the necessary resources and want to keep data processing in-house. 
+        You can also use a local instance deployed with a URL endpoint.
+        """)
+        local_model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible). Example http://localhost:8000/v1", key="local_model_uri",value=app_constants.local_model_uri)
+
+
+    elif server_mode == "ZySec Remote":
+        st.markdown("### ZySec Remote Settings")
+        st.markdown("""
+        **ZySec Remote Mode** is designed for users who prefer to use ZySec's resources. 
+        This mode provides free access to a deployed model managed by the ZySec team, 
+        subject to availability. It's a great choice for trying out ZySec without any setup.
+        """)
+        remote_model_uri = st.text_input("Remote Model Base URL Endpoint",value=app_constants.ZYSEC_DEMO, key="remote_model_uri",disabled=True)
+
+    elif server_mode == "OpenAI":
+        st.markdown("### OpenAI Settings")
+        st.markdown("""
+        **OpenAI Mode** leverages the OpenAI's Large Language Models (LLM) for processing. 
+        This mode allows you to integrate OpenAI's powerful AI capabilities while keeping 
+        the rest of the functionalities security-centric. An OpenAI API key is required.
+        """)
+        openai_api_key = st.text_input("OpenAI API Key", type="password", key="openai_api_key",value=app_constants.openai_api_key)
         st.markdown(
             "Need an OpenAI API key? [Get it here](https://platform.openai.com/api-keys).", 
             unsafe_allow_html=True
         )
-    else:
-        local_model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible)", value=app_constants.local_model_uri)
-        models = app_ai_model.list_huggingface_models()
-        if models:
-            selected_model = st.selectbox("Select a Model", models)
 
-    # Button to Update Configurations
+    # Update app_constants based on user input
     if st.button("Update Configuration"):
-        if model_source == "OpenAI Endpoint":
-            app_constants.openai_api_key = openai_api_key  # Update the OpenAI API key
-            app_constants.local_model_uri = None  # Set base URL to None for OpenAI
-            st.success("OpenAI configuration updated.")
-        else:
-            app_constants.local_model_uri = local_model_uri  # Update the Local Model URI
-            st.success("Local model configuration updated.")
-        
-        # Session and Data Reset
-        st.subheader("Session and Data Management")
-        if st.button("Reset Session"):
-            # Clear all items from the session state
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            # Reload the page to reflect the session reset
-            app_st_session_utils.reload_page()
-
-        if st.button("Reset Data"):
-            common_utils.delete_files()
-            app_logger.info("Data reset successfully.")
-            st.success("Data reset successfully.")
-            st.rerun()
-
+        if server_mode == "Private":
+            app_constants.SYSTEM_DEPLOYMENT_MODE = "private"
+            app_constants.local_model_uri = local_model_uri
+            # Reset other modes' settings
+            app_constants.openai_api_key = None
+        elif server_mode == "ZySec Remote":
+            app_constants.SYSTEM_DEPLOYMENT_MODE = "demo"
+            app_constants.local_model_uri = remote_model_uri
+            # Reset other modes' setting
+            app_constants.openai_api_key = None
+        elif server_mode == "OpenAI":
+            app_constants.SYSTEM_DEPLOYMENT_MODE = "openai"
+            app_constants.openai_api_key = openai_api_key
+            # Reset other modes' settings
+            app_constants.local_model_uri = None
+        st.success("Configuration updated for " + server_mode + " mode.")
 
     with st.expander("About ZySec and the Author"):
         st.markdown("""
@@ -82,3 +105,13 @@ def app():
             [🔗 Connect with Venkatesh on LinkedIn](https://www.linkedin.com/in/venkycs/)
 
         """, unsafe_allow_html=True)
+
+        # Session and Data Reset
+    st.subheader("Clear Session")
+    if st.button("Reset Session"):
+        # Clear all items from the session state
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+        # Reload the page to reflect the session reset
+        app_st_session_utils.reload_page()
+        st.rerun()

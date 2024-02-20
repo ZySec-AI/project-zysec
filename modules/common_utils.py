@@ -1,99 +1,9 @@
-import hashlib
-import re
-import json
 import os
 from modules import app_constants,app_page_definitions
-from modules import app_logger, app_st_session_utils
-import subprocess
+from modules import app_logger
 # Use the logger from app_config
 app_logger = app_logger.app_logger
-processed_files_record = os.path.join(app_constants.WORKSPACE_DIRECTORY, app_constants.VECTORSTORE_PROCESSED_RECORDS)
 work_dir = app_constants.WORKSPACE_DIRECTORY
-
-def compute_md5(file_path):
-    hash_md5 = hashlib.md5()
-    try:
-        with open(file_path, "rb") as f:
-            for chunk in iter(lambda: f.read(4096), b""):
-                hash_md5.update(chunk)
-        return hash_md5.hexdigest()
-    except Exception as e:
-        app_logger.error(f"Error computing MD5 for {file_path}: {e}")
-        return None
-
-def sanitize_filename(filename):
-    """Sanitize the filename by removing or replacing invalid characters."""
-    filename = filename.lower().replace(' ', '_')
-    return re.sub(r'[^\w\-_\. ]', '_', filename)
-
-def is_file_processed(file_md5):
-    try:
-        if os.path.exists(processed_files_record):
-            with open(processed_files_record, 'r') as file:
-                records = json.load(file)
-            return file_md5 in records
-        else:
-            return False
-    except Exception as e:
-        app_logger.error(f"Error checking processed files record: {e}")
-        return False
-
-def delete_files(work_dir=work_dir):
-    for root, dirs, files in os.walk(work_dir, topdown=False):
-        for name in files:
-            file_path = os.path.join(root, name)
-            try:
-                os.unlink(file_path)
-                app_logger.info(f"Deleted file: {file_path}")
-            except Exception as e:
-                app_logger.error(f"Failed to delete {file_path}. Reason: {e}")
-
-        for name in dirs:
-            dir_path = os.path.join(root, name)
-            try:
-                os.rmdir(dir_path)
-                app_logger.info(f"Deleted directory: {dir_path}")
-            except Exception as e:
-                app_logger.error(f"Failed to delete {dir_path}. Reason: {e}")
-
-def save_uploaded_file(uploaded_file, uploads_path=work_dir+'docs'):
-    file_path = os.path.join(uploads_path, uploaded_file.name)
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    app_logger.info(f"File '{uploaded_file.name}' uploaded to {uploads_path}")
-    return file_path
-
-def manage_model_control(command):
-    """
-    Manage the model control based on the given command, utilizing session utilities.
-
-    Args:
-    command (str): A command that can be 'start', 'stop', or 'reload'.
-    """
-    server_process_key = 'server_process'
-    server_running_key = 'server_running'
-
-    if command == 'start':
-        if not app_st_session_utils.get_session_data(server_running_key, False):
-            # Start the model
-            cmd = ["python3", "-m", "llama_cpp.server", "--model", "./models/Attackio/ZySec-7b_q8_0.gguf", "--n_batch", "4", "--n_ctx", "8196", "--n_batch", "200", "--n_gpu_layers", "50", "--chat_format", "zephyr"]
-            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-            app_st_session_utils.update_session_state(server_process_key, process)
-            app_st_session_utils.update_session_state(server_running_key, True)
-
-    elif command == 'stop':
-        if app_st_session_utils.get_session_data(server_running_key, False):
-            # Stop the model
-            process = app_st_session_utils.get_session_data(server_process_key)
-            if process is not None:
-                process.kill()
-                app_st_session_utils.update_session_state(server_process_key, None)
-            app_st_session_utils.update_session_state(server_running_key, False)
-
-    elif command == 'reload':
-        # Reload the model (stop and start)
-        manage_model_control('stop')
-        manage_model_control('start')
 
 def get_system_role(page, message_store):
     system_role = app_page_definitions.PAGE_CONFIG.get(page, {}).get("system_role", "Default system role message")
@@ -155,3 +65,16 @@ def construct_messages_to_send(page, message_store, prompt):
     return messages_to_send
 
 
+def get_content_mapping_to_module(content_type):
+    content_type_lower = content_type.lower()
+    # Iterate through each page in PAGE_CONFIG
+    for page, config in app_page_definitions.PAGE_CONFIG.items():
+        # Check if 'content' key exists
+        if 'content' in config:
+            # Convert all content types in the list to lowercase for comparison
+            content_list_lower = [ct.lower() for ct in config['content']]
+            # Check if content_type_lower is in the list
+            if content_type_lower in content_list_lower:
+                return page
+    # Default return if no match is found
+    return "nav_playbooks"

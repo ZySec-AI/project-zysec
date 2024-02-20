@@ -50,3 +50,7 @@ RAG_TECHNIQUE = 'refine'
 SUMMARIZER_BATCH = 4
 MAX_FILE_SIZE = 10
 LOCAL_PERSISTANT_DB = WORKSPACE_DIRECTORY + "db/"
+CONTENT_TYPE = ["Policies", "Playbooks", "Standards","References", "Breaches","Regulatory", "Other"]
+SYSTEM_CONTENT_DATA = "app-content.json"
+SYSTEM_DEPLOYMENT_MODE = 0 #private-0, openai-1, demo-2
+ZYSEC_DEMO = "http://localhost/v1/"
