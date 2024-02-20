@@ -10,6 +10,7 @@ from modules import app_logger, common_utils, app_st_session_utils
 # Use the logger from app_config
 app_logger = app_logger.app_logger
 
+
 # Define a function to query the language model
 def query_llm(prompt, retriever=None, message_store=None, use_retrieval_chain=False):
     page = st.session_state.get("current_page", "default_page")

@@ -13,23 +13,6 @@ work_dir = app_constants.WORKSPACE_DIRECTORY
 processed_files_record = os.path.join(app_constants.WORKSPACE_DIRECTORY, app_constants.VECTORSTORE_PROCESSED_RECORDS)
 system_content_file = metadata_path=app_constants.SYSTEM_CONTENT_DATA
 
-def list_huggingface_models():
-    models_dir = './models'
-    models = []
-    if not os.path.exists(models_dir):
-        app_logger.warning(f"Directory not found: {models_dir}")
-        return models
-
-    for orgname in os.listdir(models_dir):
-        org_path = os.path.join(models_dir, orgname)
-        if os.path.isdir(org_path):
-            for item in os.listdir(org_path):
-                item_path = os.path.join(org_path, item)
-                if os.path.isdir(item_path) or os.path.isfile(item_path):
-                    models.append(f"{orgname}/{item}")
-
-    return models
-
 def download_file(url, local_path, metadata_path=system_content_file):
     try:
         response = requests.get(url)
