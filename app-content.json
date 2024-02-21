@@ -2,17 +2,25 @@
     {
         "name": "Digital Identity Guidelines",
         "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-63-3.pdf",
-        "downloaded_status": true,
+        "downloaded_status": false,
         "local_path": "./workspace/docs/nist.sp.800-63-3.pdf",
-        "indexed_status": true,
+        "indexed_status": false,
         "content_type": "Standards"
     },
     {
         "name": "OWASP Top 10 for LLM Applications",
         "url": "https://owasp.org/www-project-top-10-for-large-language-model-applications/assets/PDF/OWASP-Top-10-for-LLMs-2023-v1_0_1.pdf",
-        "downloaded_status": true,
+        "downloaded_status": false,
         "local_path": "./workspace/docs/owasp-top-10-for-llms-2023-v1_0_1.pdf",
-        "indexed_status": true,
+        "indexed_status": false,
         "content_type": "References"
+    },
+    {
+        "name": "UAE NESA Regulation",
+        "url": "https://u.ae/-/media/guidelines/Guidelines-2020/UAE-IA-Regulation-v11-1.pdf",
+        "downloaded_status": false,
+        "local_path": "./workspace/docs/uae_ia_regulation_v11_1.pdf",
+        "indexed_status": false,
+        "content_type": "Standards"
     }
 ]

@@ -15,10 +15,6 @@ handle_sigint() {
 # Trap SIGINT (Ctrl+C) and execute the handle_sigint function
 trap handle_sigint SIGINT
 
-# Step 1: Git pull
-echo "Pulling latest changes from Git repository..."
-git pull
-
 # Step 2: Check for curl and download model file if it doesn't exist
 if ! command -v curl &> /dev/null
 then
@@ -37,26 +33,6 @@ if [ ! -f "$model_path" ]; then
     curl -L -o "$model_file" "https://huggingface.co/aihub-app/ZySec-7B-v1-GGUF/resolve/main/$model_file?download=true" && echo "Download completed." || { echo "Failed to download model."; exit 1; }
 else
     echo "Model file $model_file already exists. Skipping download."
-fi
-
-# Step 3: Setup and activate virtual environment
-venv_path="zysec"
-if [ ! -d "$venv_path" ]; then
-    echo "Creating virtual environment 'ZySec'..."
-    python3 -m venv $venv_path
-fi
-
-echo "Activating virtual environment 'ZySec'..."
-source $venv_path/bin/activate
-
-# Check if we are in the right virtual environment
-if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == *"$venv_path" ]]; then
-    echo "Now in the 'ZySec' virtual environment."
-    # Install requirements
-    pip3 install -r requirements.txt -q
-else
-    echo "Failed to activate 'ZySec' virtual environment. Exiting."
-    exit 1
 fi
 
 # Function to start or restart the model server
@@ -78,10 +54,4 @@ start_model_server() {
 
 # Step 4: Start model server in the background
 start_model_server &
-
-# Step 5: Start the Streamlit app
-echo "Starting Streamlit app..."
-streamlit run app.py
-
-# Wait for any background process to exit
 wait
