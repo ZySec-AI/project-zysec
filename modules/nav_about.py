@@ -68,12 +68,12 @@ def app():
             app_constants.SYSTEM_DEPLOYMENT_MODE = "private"
             app_constants.local_model_uri = local_model_uri
             # Reset other modes' settings
-            app_constants.openai_api_key = None
+            app_constants.openai_api_key = "NO-API-KEY-NEEDED"
         elif server_mode == "ZySec Remote":
             app_constants.SYSTEM_DEPLOYMENT_MODE = "demo"
             app_constants.local_model_uri = remote_model_uri
             # Reset other modes' setting
-            app_constants.openai_api_key = None
+            app_constants.openai_api_key = "NO-API-KEY-NEEDED"
         elif server_mode == "OpenAI":
             app_constants.SYSTEM_DEPLOYMENT_MODE = "openai"
             app_constants.openai_api_key = openai_api_key
