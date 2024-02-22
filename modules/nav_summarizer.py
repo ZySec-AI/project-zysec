@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 from langchain.chains import load_summarize_chain
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, UnstructuredWordDocumentLoader
 from langchain.prompts import PromptTemplate
-from modules import app_page_definitions, app_logger,app_constants
+from modules import app_page_definitions, app_logger,app_constants,file_utils
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
@@ -14,14 +14,6 @@ app_logger = app_logger.app_logger
 batch_size = app_constants.SUMMARIZER_BATCH
 WORKSPACE_DIRECTORY = app_constants.WORKSPACE_DIRECTORY
 
-def save_uploaded_file(uploaded_file, directory=WORKSPACE_DIRECTORY + "/tmp"):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    file_path = os.path.join(directory, uploaded_file.name)
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getvalue())
-    app_logger.info(f"File {uploaded_file.name} saved to {directory}")
-    return file_path
 
 def process_file(file_path, file_type):
     if file_type == "text/plain":
@@ -48,7 +40,7 @@ def app():
     uploaded_file = st.file_uploader("Upload your document here:", type=['txt', 'pdf', 'docx'], key="file_uploader")
 
     if uploaded_file is not None:
-        file_path = save_uploaded_file(uploaded_file)
+        file_path = file_utils.save_uploaded_file(uploaded_file,uploads_path=WORKSPACE_DIRECTORY + "/tmp")
         docs = process_file(file_path, uploaded_file.type)
 
         total_docs = len(docs)

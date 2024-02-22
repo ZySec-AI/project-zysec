@@ -10,6 +10,7 @@ def app(message_store, current_page="nav_private_ai", use_retrieval_chain=False)
     # Fetch page configuration from app_page_definitions
     page_config = app_page_definitions.PAGE_CONFIG.get(current_page, app_page_definitions.PAGE_CONFIG["default"])
     files_indexed = file_utils.get_indexed_files_for_page(current_page)
+    #print(files_indexed)
     # Use configurations for title, caption, and greeting from page_config
     st.title(page_config["title"])
     st.caption(page_config["caption"])

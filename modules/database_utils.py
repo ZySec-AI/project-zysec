@@ -6,9 +6,6 @@ from modules import app_constants, app_logger
 
 app_logger = app_logger.app_logger
 
-DB_DIR = "./workspace/db/local_chroma_db"
-
-
 def initialize_chroma_db(file_path):
     """
     Initializes or creates a new Chroma database.

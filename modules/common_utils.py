@@ -40,6 +40,9 @@ def setup_initial_folders():
     os.makedirs(docs_path, exist_ok=True)
     os.makedirs(db_path, exist_ok=True)
     os.makedirs(tmp_path, exist_ok=True)
+    processed_docs_path = work_dir+app_constants.PROCESSED_DOCS
+    if not os.path.exists(processed_docs_path):
+        open(processed_docs_path, 'a').close()
 
 def construct_messages_to_send(page, message_store, prompt):
     """
@@ -94,3 +97,22 @@ def get_content_mapping_to_module(content_type):
                 return page
     # Default return if no match is found
     return "nav_playbooks"
+
+def read_processed_log():
+    processed_paths = set()
+    log_file_path = os.path.join(work_dir, 'index_processed.log')
+    
+    try:
+        with open(log_file_path, 'r') as log_file:
+            for line in log_file:
+                parts = line.strip().split(',')
+                if len(parts) > 1:
+                    # Extract the file path (assuming it's the last part)
+                    file_path = parts[-1]
+                    processed_paths.add(file_path)
+        return processed_paths
+    except FileNotFoundError:
+        app_logger.error(f"File not found: {log_file_path}")
+    except Exception as e:
+        app_logger.error(f"An error occurred while reading the log file: {e}")
+    return processed_paths

@@ -1,7 +1,6 @@
 import streamlit as st
 from modules import app_prompt, app_researcher, app_logger, database_utils, app_to_vectorstore, app_page_definitions
-from . import common_utils
-from . import app_st_session_utils,app_constants  # Importing the session utilities module
+from modules import app_st_session_utils,app_constants,common_utils  # Importing the session utilities module
 
 # Use the logger from app_config
 app_logger = app_logger.app_logger
@@ -29,7 +28,7 @@ def app(message_store):
         with st.spinner('Searching...'):
             try:
                 research_notes = app_researcher.explore_url_on_internet(topic, count=app_constants.SEARCH_COUNT)
-                app_to_vectorstore.get_chroma_index(research_notes, is_persistent=False)
+                status = app_to_vectorstore.get_chroma_index(research_notes, is_persistent=False)
                 app_logger.info("Internet research completed successfully")
                 st.success("Internet research completed")
                 st.session_state['research_done'] = True

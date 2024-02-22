@@ -40,7 +40,7 @@ def query_llm(prompt, page="nav_private_ai", retriever=None, message_store=None,
 
         # Construct messages to send to the LLM, excluding timestamps
         messages_to_send = common_utils.construct_messages_to_send(page, message_store, prompt)
-        #print(messages_to_send)
+        app_logger.debug(messages_to_send)
         # Sending the messages to the LLM and retrieving the response
         response = None
         if use_retrieval_chain:
