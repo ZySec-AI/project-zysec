@@ -54,11 +54,10 @@ def app(message_store):
 
     app_st_session_utils.manage_message_history(current_page)
     
-    if not st.session_state['page_loaded']:
-        greeting_message = common_utils.page_greetings(st.session_state['current_page'], st.session_state.get('username', ''))
-        st.chat_message("assistant").markdown(greeting_message, unsafe_allow_html=True)
-        app_st_session_utils.update_session_state('page_loaded', True)
-        app_logger.info("Displayed greeting message")
+    greeting_message = common_utils.get_page_greeting(st.session_state['current_page'], st.session_state.get('username', ''))
+    st.chat_message("assistant").markdown(greeting_message, unsafe_allow_html=True)
+    app_st_session_utils.update_session_state('page_loaded', True)
+
 
     # Displaying chat messages
     for message in st.session_state.get("messages", []):
@@ -70,7 +69,7 @@ def app(message_store):
         st.chat_message("user").write(prompt)
         with st.spinner("Processing your request..."):
             if db_retriever:
-                formatted_response = app_prompt.query_llm(prompt, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": app_constants.RAG_K}), message_store=st.session_state['message_store'],use_retrieval_chain=True)
+                formatted_response = app_prompt.query_llm(prompt,page=current_page, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": app_constants.RAG_K}), message_store=st.session_state['message_store'],use_retrieval_chain=True)
                 st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
                 app_st_session_utils.add_message_to_session("user", prompt)
                 app_st_session_utils.add_message_to_session("assistant", formatted_response)

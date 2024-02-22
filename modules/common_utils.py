@@ -9,13 +9,29 @@ def get_system_role(page, message_store):
     system_role = app_page_definitions.PAGE_CONFIG.get(page, {}).get("system_role", "Default system role message")
     message_store.update_message(page, "system", system_role)
 
-def page_greetings(page, username=""):
-    default_greeting = "Hello! How can I assist you today?"
-    greeting = app_page_definitions.PAGE_CONFIG.get(page, {}).get("greeting", default_greeting)
-    if username:
-        greeting = greeting.replace("Hello", f"Hello {username}")
-    return greeting
+def get_page_greeting(page_key, username="", files_indexed=[]):
+    """Return a greeting message for a specific page, including a list of indexed files."""
+    try:
+        # Define the default greeting
+        default_greeting = "Hello! How can I assist you today?"
+        # Fetch the greeting from page configuration or use the default
+        greeting = app_page_definitions.PAGE_CONFIG.get(page_key, {}).get("greeting", default_greeting)
 
+        # Personalize greeting if username is provided
+        if username:
+            greeting = greeting.replace("Hello", f"Hello {username}")
+
+        # Format the indexed files into a list
+        if files_indexed:
+            files_list = "\n".join([f"{i+1}. {file}" for i, file in enumerate(files_indexed)])
+            additional_message = f"I'm familiar with the following documents:\n{files_list}"
+            # Append the file list to the greeting message
+            greeting = f"{greeting}\n\n{additional_message}"
+
+        return greeting
+    except Exception as e:
+        # Handle any exceptions and return a default error message
+        return f"Error generating greeting message: {e}"
 
 def setup_initial_folders():
     docs_path = os.path.join(work_dir, "docs")

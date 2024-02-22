@@ -1,6 +1,6 @@
 #file utils.py
 import os
-from modules import app_constants,common_utils, app_to_vectorstore
+from modules import app_constants,common_utils, app_to_vectorstore,app_page_definitions
 from modules import app_logger
 import json
 import requests
@@ -191,3 +191,28 @@ def perform_file_operation(filename, operation):
         if file_entry.get("local_path") == filename:
                 current_page = common_utils.get_content_mapping_to_module(file_entry.get('content_type'))
                 index_file(filename,current_page)
+
+def get_indexed_files_for_page(page_id, file_path=app_constants.SYSTEM_CONTENT_DATA):
+    try:
+        # Import the page configuration
+        PAGE_CONFIG = app_page_definitions.PAGE_CONFIG
+
+        # Check if the page_id exists in PAGE_CONFIG and has a 'content' key
+        if page_id not in PAGE_CONFIG or "content" not in PAGE_CONFIG[page_id]:
+            print(f"Page '{page_id}' not found in PAGE_CONFIG or 'content' key is missing.")
+            return []
+
+        # Get content categories and convert them to lowercase for case-insensitive matching
+        content_categories = [category.lower() for category in PAGE_CONFIG[page_id]["content"]]
+
+        # Load the content data from the JSON file
+        with open(file_path, 'r') as file:
+            content_data = json.load(file)
+
+        # Filter the content data by the specified content categories and extract only the 'name'
+        filtered_files = [item['name'] for item in content_data if item['content_type'].lower() in content_categories]
+
+        return filtered_files
+    except Exception as e:
+        print(f"An error occurred {file_path} : {e}")
+        return []

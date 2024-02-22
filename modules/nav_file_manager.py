@@ -1,6 +1,6 @@
 from . import app_constants
 import streamlit as st
-from modules import file_utils, app_logger, app_page_definitions, app_to_vectorstore
+from modules import file_utils, app_logger, app_page_definitions
 import os
 
 # Use the logger from app_config
