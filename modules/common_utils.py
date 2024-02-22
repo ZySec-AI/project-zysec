@@ -9,13 +9,29 @@ def get_system_role(page, message_store):
     system_role = app_page_definitions.PAGE_CONFIG.get(page, {}).get("system_role", "Default system role message")
     message_store.update_message(page, "system", system_role)
 
-def page_greetings(page, username=""):
-    default_greeting = "Hello! How can I assist you today?"
-    greeting = app_page_definitions.PAGE_CONFIG.get(page, {}).get("greeting", default_greeting)
-    if username:
-        greeting = greeting.replace("Hello", f"Hello {username}")
-    return greeting
+def get_page_greeting(page_key, username="", files_indexed=[]):
+    """Return a greeting message for a specific page, including a list of indexed files."""
+    try:
+        # Define the default greeting
+        default_greeting = "Hello! How can I assist you today?"
+        # Fetch the greeting from page configuration or use the default
+        greeting = app_page_definitions.PAGE_CONFIG.get(page_key, {}).get("greeting", default_greeting)
 
+        # Personalize greeting if username is provided
+        if username:
+            greeting = greeting.replace("Hello", f"Hello {username}")
+
+        # Format the indexed files into a list
+        if files_indexed:
+            files_list = "\n".join([f"{i+1}. {file}" for i, file in enumerate(files_indexed)])
+            additional_message = f"I'm familiar with the following documents:\n{files_list}"
+            # Append the file list to the greeting message
+            greeting = f"{greeting}\n\n{additional_message}"
+
+        return greeting
+    except Exception as e:
+        # Handle any exceptions and return a default error message
+        return f"Error generating greeting message: {e}"
 
 def setup_initial_folders():
     docs_path = os.path.join(work_dir, "docs")
@@ -24,6 +40,9 @@ def setup_initial_folders():
     os.makedirs(docs_path, exist_ok=True)
     os.makedirs(db_path, exist_ok=True)
     os.makedirs(tmp_path, exist_ok=True)
+    processed_docs_path = work_dir+app_constants.PROCESSED_DOCS
+    if not os.path.exists(processed_docs_path):
+        open(processed_docs_path, 'a').close()
 
 def construct_messages_to_send(page, message_store, prompt):
     """
@@ -78,3 +97,22 @@ def get_content_mapping_to_module(content_type):
                 return page
     # Default return if no match is found
     return "nav_playbooks"
+
+def read_processed_log():
+    processed_paths = set()
+    log_file_path = os.path.join(work_dir, 'index_processed.log')
+    
+    try:
+        with open(log_file_path, 'r') as log_file:
+            for line in log_file:
+                parts = line.strip().split(',')
+                if len(parts) > 1:
+                    # Extract the file path (assuming it's the last part)
+                    file_path = parts[-1]
+                    processed_paths.add(file_path)
+        return processed_paths
+    except FileNotFoundError:
+        app_logger.error(f"File not found: {log_file_path}")
+    except Exception as e:
+        app_logger.error(f"An error occurred while reading the log file: {e}")
+    return processed_paths

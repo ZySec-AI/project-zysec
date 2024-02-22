@@ -1,7 +1,7 @@
 import streamlit as st
 from modules import app_logger, app_prompt
 import streamlit.components.v1 as components
-from modules import database_utils,common_utils
+from modules import database_utils,common_utils,app_page_definitions
 import datetime
 
 # Use the logger from app_config
@@ -32,15 +32,6 @@ def log_session_info(message):
         app_logger.info(message)
     except Exception as e:
         app_logger.error(f"Logging error: {e}")
-
-def display_page_greeting(page_key, username):
-    """Display a greeting message for a specific page."""
-    try:
-        greeting_message = common_utils.page_greetings(page_key, username)
-        st.chat_message("assistant").markdown(greeting_message, unsafe_allow_html=True)
-        log_session_info("Displayed greeting message")
-    except Exception as e:
-        log_session_info(f"Error displaying greeting message: {e}")
 
 def manage_message_history(current_page):
     """Manage the history of messages for the current page."""

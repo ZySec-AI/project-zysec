@@ -40,7 +40,10 @@ duckduckgo_search==4.4.3
 effdet==0.4.1
 emoji==2.10.1
 en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl#sha256=86cc141f63942d4b2c5fcee06630fd6f904788d2f0ab005cce45aadb8fb73889
+entrypoints==0.4
+Faker==23.2.1
 fastapi==0.109.2
+favicon==0.7.0
 filelock==3.13.1
 filetype==1.2.0
 flatbuffers==23.5.26
@@ -53,6 +56,7 @@ google-auth==2.27.0
 googleapis-common-protos==1.62.0
 grpcio==1.60.1
 h11==0.14.0
+htbuilder==0.6.2
 html2text==2020.1.16
 httpcore==1.0.2
 httptools==0.6.1
@@ -84,13 +88,16 @@ langsmith==0.0.87
 layoutparser==0.3.4
 llama_cpp_python==0.2.40
 lxml==5.1.0
+Markdown==3.5.2
 markdown-it-py==3.0.0
+markdownlit==0.0.7
 MarkupSafe==2.1.5
 marshmallow==3.20.2
 matplotlib==3.8.2
 mdurl==0.1.2
 mmh3==4.1.0
 monotonic==1.6
+more-itertools==10.2.0
 mpmath==1.3.0
 multidict==6.0.5
 murmurhash==1.0.10
@@ -128,6 +135,7 @@ pip-review==1.3.0
 portalocker==2.8.2
 posthog==3.4.0
 preshed==3.0.9
+prometheus_client==0.20.0
 protobuf==4.25.2
 pulsar-client==3.4.0
 pyarrow==15.0.0
@@ -140,6 +148,7 @@ pydantic-settings==2.1.0
 pydantic_core==2.16.2
 pydeck==0.8.1b0
 Pygments==2.17.2
+pymdown-extensions==10.7
 pyparsing==3.1.1
 pypdf==4.0.1
 pypdfium2==4.27.0
@@ -177,10 +186,20 @@ spacy-loggers==1.0.5
 SQLAlchemy==2.0.26
 srsly==2.4.8
 sse-starlette==2.0.0
+st-annotated-text==4.0.1
 starlette==0.36.3
 starlette-context==0.3.6
 streamlit==1.31.1
+streamlit-camera-input-live==0.2.0
+streamlit-card==1.0.0
+streamlit-embedcode==0.1.2
+streamlit-extras==0.4.0
+streamlit-faker==0.0.3
+streamlit-image-coordinates==0.1.6
+streamlit-keyup==0.2.3
 streamlit-option-menu==0.3.12
+streamlit-toggle-switch==1.0.2
+streamlit-vertical-slider==2.5.5
 sympy==1.12
 tabulate==0.9.0
 tenacity==8.2.3
@@ -210,6 +229,7 @@ uvicorn==0.27.1
 uvloop==0.19.0
 validators==0.22.0
 wasabi==1.1.2
+watchdog==4.0.0
 watchfiles==0.21.0
 weasel==0.3.4
 websocket-client==1.7.0
