@@ -1,8 +1,17 @@
 #!/bin/bash
 
 # Define model directory and file
-model_dir="models/aihub-app"
-model_file="ZySec-7B-v1.Q4_K_M.gguf"
+
+#ZySec-7B-v1.Q2_K.gguf - MISTRAL
+#ZySec-7B-v1.Q4_K_M.gguf - MISTRAL
+#ZySec-7B-v1.Q8_0.gguf - MISTRAL
+
+#ZySec-7B-v2.Q2_K.gguf - GEMMA
+#ZySec-7B-v2.Q4_K_M.gguf - GEMMA
+#ZySec-7B-v2.Q8_0.gguf - GEMMA
+
+model_dir="models/ZySec-AI"
+model_file="ZySec-7B-v2.Q2_K.gguf"
 model_path="$model_dir/$model_file"
 
 # Function to handle SIGINT (Ctrl+C)
@@ -30,7 +39,7 @@ fi
 if [ ! -f "$model_path" ]; then
     echo "Model file $model_file does not exist. Downloading now."
     cd "$model_dir" || { echo "Failed to navigate to $model_dir"; exit 1; }
-    curl -L -o "$model_file" "https://huggingface.co/aihub-app/ZySec-7B-v1-GGUF/resolve/main/$model_file?download=true" && echo "Download completed." || { echo "Failed to download model."; exit 1; }
+    curl -L -o "$model_file" "https://huggingface.co/ZySec-AI/ZySec-7B-v2-GGUF/resolve/main/$model_file?download=true" && echo "Download completed." || { echo "Failed to download model."; exit 1; }
 else
     echo "Model file $model_file already exists. Skipping download."
 fi
