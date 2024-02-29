@@ -1,4 +1,4 @@
-# ZySec AI: Security with AI for AI
+# ZySec: Private Security Co-Pilot
 
 Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project ZySec, powered by the innovative ZySec 7B model, is reshaping the cybersecurity landscape with AI-driven solutions.
 
