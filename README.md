@@ -2,7 +2,7 @@
 
 Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project ZySec, powered by the innovative ZySec 7B model, is reshaping the cybersecurity landscape with AI-driven solutions.
 
-# [🔗 View Demo](https://huggingface.co/spaces/ZySec-AI/ZySec)
+## [🔗 View Demo on Huggingface](https://huggingface.co/spaces/ZySec-AI/ZySec)
 
 ## Key Features
 
@@ -56,18 +56,18 @@ You have the flexibility to run the ZySec AI application either locally on your 
       ```bash
       git clone https://github.com/ZySec-AI/ZySec.git
 
-2. **Install Dependencies and Run the Web UI:** Navigate to the cloned directory, set the script as executable, and run it to start the Streamlit application.
+2. **Starting the Model Server**: Before running the model server, ensure that the llama-cpp-server is installed. You can install it using pip:
+      ```bash
+      pip3 install 'llama-cpp-python[server]'
+      chmod +x start_model_server.sh
+      ./start_model_server.sh
+
+3. **Install Dependencies and Run the Web UI:** Navigate to the cloned directory, set the script as executable, and run it to start the Streamlit application.
 
       ```bash
       cd ZySec
       chmod +x start_web_ui.sh
       ./start_web_ui.sh
-
-3. **Starting the Model Server**: Before running the model server, ensure that the llama-cpp-server is installed. You can install it using pip:
-      ```bash
-      pip3 install 'llama-cpp-python[server]'
-      chmod +x start_model_server.sh
-      ./start_model_server.sh
 
 ***You can run locally on the same computer or remotely on GPU instance depending on your preferences. For better performance use VLLM deployment mode in GPU instance.***
 
