@@ -2,6 +2,8 @@
 
 Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project ZySec, powered by the innovative ZySec 7B model, is reshaping the cybersecurity landscape with AI-driven solutions.
 
+# [🔗 View Demo](https://huggingface.co/spaces/ZySec-AI/ZySec)
+
 ## Key Features
 
 1. **AI-Driven Cybersecurity:** Experience the full potential of the ZySec 7B model, a specialized AI tool for cybersecurity.
