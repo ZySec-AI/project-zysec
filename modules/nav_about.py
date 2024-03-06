@@ -22,7 +22,7 @@ def app():
     mode_to_index = {"private": 0, "demo": 1, "openai": 2}
     default_index = mode_to_index.get(app_constants.SYSTEM_DEPLOYMENT_MODE, 0)  # Default to "Local" if not found
     # Radio buttons for selecting the server mode
-    server_mode = st.radio("Select Server Mode", ["Private", "ZySec Remote", "OpenAI"],index=default_index)
+    server_mode = st.radio("Select Server Mode", ["Private", "ZySec Demo", "OpenAI"],index=default_index)
 
     # Initialize variables for settings
     local_model_uri, remote_model_uri, openai_api_key = None, None, None
@@ -36,16 +36,18 @@ def app():
         You can also use a local instance deployed with a URL endpoint.
         """)
         local_model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible). Example http://localhost:8000/v1", key="local_model_uri",value=app_constants.local_model_uri)
+        st.info("Use update configuration for changes to be affected")
 
 
-    elif server_mode == "ZySec Remote":
-        st.markdown("### ZySec Remote Settings")
+    elif server_mode == "ZySec Demo":
+        st.markdown("### ZySec Demo Settings")
         st.markdown("""
-        **ZySec Remote Mode** is designed for users who prefer to use ZySec's resources. 
+        **ZySec Demo Mode** is designed for users who prefer to use ZySec's resources. 
         This mode provides free access to a deployed model managed by the ZySec team, 
         subject to availability. It's a great choice for trying out ZySec without any setup.
         """)
         remote_model_uri = st.text_input("Remote Model Base URL Endpoint",value=app_constants.ZYSEC_DEMO, key="remote_model_uri",disabled=True)
+        st.info("Use update configuration for changes to be affected")
 
     elif server_mode == "OpenAI":
         st.markdown("### OpenAI Settings")
@@ -59,6 +61,7 @@ def app():
             "Need an OpenAI API key? [Get it here](https://platform.openai.com/api-keys).", 
             unsafe_allow_html=True
         )
+        st.info("Use update configuration for changes to be affected")
 
     # Update app_constants based on user input
     if st.button("Update Configuration"):
@@ -67,16 +70,19 @@ def app():
             app_constants.local_model_uri = local_model_uri
             # Reset other modes' settings
             app_constants.openai_api_key = "NO-API-KEY-NEEDED"
-        elif server_mode == "ZySec Remote":
+            st.info("Use update configuration for changes to be affected")
+        elif server_mode == "ZySec Demo":
             app_constants.SYSTEM_DEPLOYMENT_MODE = "demo"
             app_constants.local_model_uri = remote_model_uri
             # Reset other modes' setting
             app_constants.openai_api_key = "NO-API-KEY-NEEDED"
+            st.info("Use update configuration for changes to be affected")
         elif server_mode == "OpenAI":
             app_constants.SYSTEM_DEPLOYMENT_MODE = "openai"
             app_constants.openai_api_key = openai_api_key
             # Reset other modes' settings
             app_constants.local_model_uri = None
+            st.info("Use update configuration for changes to be affected")
         st.success("Configuration updated for " + server_mode + " mode.")
 
     with st.expander("About ZySec and the Author"):
