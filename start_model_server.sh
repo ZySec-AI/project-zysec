@@ -11,7 +11,7 @@
 #ZySec-7B-v2.Q8_0.gguf - GEMMA
 
 model_dir="models/ZySec-AI"
-model_file="ZySec-7B-v2.Q2_K.gguf"
+model_file="ZySec-7B-v1.Q2_K.gguf"
 model_path="$model_dir/$model_file"
 
 # Function to handle SIGINT (Ctrl+C)
