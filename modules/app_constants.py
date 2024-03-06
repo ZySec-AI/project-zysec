@@ -53,4 +53,4 @@ LOCAL_PERSISTANT_DB = WORKSPACE_DIRECTORY + "db/"
 CONTENT_TYPE = ["Policies", "Playbooks", "Standards", "Reference Docs"]
 SYSTEM_CONTENT_DATA = "app-content.json"
 SYSTEM_DEPLOYMENT_MODE = 0 #private-0, openai-1, demo-2
-ZYSEC_DEMO = "http://localhost/v1/" #not enabled yet
+ZYSEC_DEMO = "http://zysec.is-a-geek.com:8000/v1" #not enabled yet

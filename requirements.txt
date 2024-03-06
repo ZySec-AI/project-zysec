@@ -86,7 +86,7 @@ langcodes==3.3.0
 langdetect==1.0.9
 langsmith==0.0.87
 layoutparser==0.3.4
-llama_cpp_python==0.2.40
+llama_cpp_python==0.2.53
 lxml==5.1.0
 Markdown==3.5.2
 markdown-it-py==3.0.0
@@ -228,6 +228,7 @@ urllib3==2.2.0
 uvicorn==0.27.1
 uvloop==0.19.0
 validators==0.22.0
+vulture==2.11
 wasabi==1.1.2
 watchdog==4.0.0
 watchfiles==0.21.0
