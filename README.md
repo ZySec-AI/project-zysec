@@ -7,6 +7,7 @@ Welcome to ZySec AI, where artificial intelligence meets cybersecurity. Project 
 **ZySec is mission to make AI accesible for Security proffesionals like you!** 
 
 ## [🔗 Follow us ](https://www.linkedin.com/company/zysec-ai/)
+## [🔗 Explore Our Vision and Roadmap](https://github.com/ZySec-AI/.github/blob/main/roadmap.md)
 
 ## Key Features
 
