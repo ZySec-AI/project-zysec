@@ -39,7 +39,7 @@ fi
 if [ ! -f "$model_path" ]; then
     echo "Model file $model_file does not exist. Downloading now."
     cd "$model_dir" || { echo "Failed to navigate to $model_dir"; exit 1; }
-    curl -L -o "$model_file" "https://huggingface.co/ZySec-AI/ZySec-7B-v2-GGUF/resolve/main/$model_file?download=true" && echo "Download completed." || { echo "Failed to download model."; exit 1; }
+    curl -L -o "$model_file" "https://huggingface.co/ZySec-AI/ZySec-7B-GGUF/resolve/main/$model_file?download=true" && echo "Download completed." || { echo "Failed to download model."; exit 1; }
 else
     echo "Model file $model_file already exists. Skipping download."
 fi
