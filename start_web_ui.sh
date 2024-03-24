@@ -2,7 +2,8 @@
 
 # Step 1: Git pull
 echo "Pulling latest changes from Git repository..."
-git pull
+git pull origin main
+
 
 # Step 3: Setup and activate virtual environment
 venv_path="zysec"
@@ -17,6 +18,8 @@ source $venv_path/bin/activate
 # Check if we are in the right virtual environment
 if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == *"$venv_path" ]]; then
     echo "Now in the 'ZySec' virtual environment."
+    # upgrade pip
+    python3 -m pip install --upgrade pip
     # Install requirements
     pip3 install -r requirements.txt -q
 else
