@@ -7,12 +7,15 @@ from modules import app_logger
 
 app_logger = app_logger.app_logger
 # Use shared_variable in this module
-openai_api_key = os.environ.get("OPENAI_API_KEY", "NONE")
+openai_api_key = os.environ.get("REMOTE_API_KEY") or os.environ.get("LOCAL_API_KEY") 
 
 # Set default values if environment variables are not found
 #mongodb_uri = os.environ.get("MONGODB_URI", "mongodb://localhost:27017")
-local_model_uri = os.environ.get("LOCAL_OPENAI_URI", "http://localhost:8000/v1")
-#local_model_uri = os.environ.get("LOCAL_OPENAI_URI", None)
+
+model_uri = os.environ.get("REMOTE_BASE_URL") or os.environ.get("LOCAL_BASE_URL")
+
+#model_uri = os.environ.get("LOCAL_OPENAI_URI", None)
+
 DOCUMENT_MAP = {
     ".html": UnstructuredHTMLLoader,
     ".txt": TextLoader,

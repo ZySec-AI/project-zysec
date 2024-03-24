@@ -25,7 +25,7 @@ def app():
     server_mode = st.radio("Select Server Mode", ["Private", "ZySec Demo", "OpenAI"],index=default_index)
 
     # Initialize variables for settings
-    local_model_uri, remote_model_uri, openai_api_key = None, None, None
+    model_uri, remote_model_uri, openai_api_key = None, None, None
 
     # Conditional rendering of settings and their descriptions based on the selected server mode
     if server_mode == "Private":
@@ -35,7 +35,7 @@ def app():
         This mode is ideal if you have the necessary resources and want to keep data processing in-house. 
         You can also use a local instance deployed with a URL endpoint.
         """)
-        local_model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible). Example http://localhost:8000/v1", key="local_model_uri",value=app_constants.local_model_uri)
+        model_uri = st.text_input("Private Model Base URL Endpoint (OpenAI Compatible). Example http://localhost:8000/v1", key="model_uri",value=app_constants.model_uri)
         st.info("Use update configuration for changes to be affected")
 
 
@@ -67,13 +67,13 @@ def app():
     if st.button("Update Configuration"):
         if server_mode == "Private":
             app_constants.SYSTEM_DEPLOYMENT_MODE = "private"
-            app_constants.local_model_uri = local_model_uri
+            app_constants.model_uri = model_uri
             # Reset other modes' settings
             app_constants.openai_api_key = "NO-API-KEY-NEEDED"
             st.info("Use update configuration for changes to be affected")
         elif server_mode == "ZySec Demo":
             app_constants.SYSTEM_DEPLOYMENT_MODE = "demo"
-            app_constants.local_model_uri = remote_model_uri
+            app_constants.model_uri = remote_model_uri
             # Reset other modes' setting
             app_constants.openai_api_key = "NO-API-KEY-NEEDED"
             st.info("Use update configuration for changes to be affected")
@@ -81,7 +81,7 @@ def app():
             app_constants.SYSTEM_DEPLOYMENT_MODE = "openai"
             app_constants.openai_api_key = openai_api_key
             # Reset other modes' settings
-            app_constants.local_model_uri = None
+            app_constants.model_uri = None
             st.info("Use update configuration for changes to be affected")
         st.success("Configuration updated for " + server_mode + " mode.")
 
