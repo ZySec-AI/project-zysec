@@ -58,7 +58,7 @@ def app():
                 llm = ChatOpenAI(
                     model_name=app_constants.MODEL_NAME,
                     openai_api_key=app_constants.openai_api_key,
-                    base_url=app_constants.local_model_uri,
+                    base_url=app_constants.model_uri,
                     streaming=True
                 )
 

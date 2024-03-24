@@ -17,7 +17,7 @@ def query_llm(prompt, page="nav_private_ai", retriever=None, message_store=None,
             llm = ChatOpenAI(
                 model_name=app_constants.MODEL_NAME,
                 openai_api_key=app_constants.openai_api_key,
-                base_url=app_constants.local_model_uri,
+                base_url=app_constants.model_uri,
                 streaming=True
             )
             qa = RetrievalQAWithSourcesChain.from_chain_type(
@@ -29,7 +29,7 @@ def query_llm(prompt, page="nav_private_ai", retriever=None, message_store=None,
         else:
             app_logger.info("Using direct OpenAI API call")
             llm = OpenAI(
-                base_url=app_constants.local_model_uri,
+                base_url=app_constants.model_uri,
                 api_key=app_constants.openai_api_key
             )
 

@@ -61,18 +61,11 @@ You have the flexibility to run the ZySec AI application either locally on your 
       ```bash
       git clone https://github.com/ZySec-AI/ZySec.git
 
-2. **Starting the Model Server**: Before running the model server, ensure that the llama-cpp-server is installed. You can install it using pip:
+2. **Starting the Application Server**: For remote model server, please update the config.cfg. The script below will download the model and run the applicaiton locally, if can modify the configuration file:
       ```bash
-      pip3 install 'llama-cpp-python[server]'
-      chmod +x start_model_server.sh
-      ./start_model_server.sh
+      chmod +x start.sh
+      ./start.sh
 
-3. **Install Dependencies and Run the Web UI:** Navigate to the cloned directory, set the script as executable, and run it to start the Streamlit application.
-
-      ```bash
-      cd ZySec
-      chmod +x start_web_ui.sh
-      ./start_web_ui.sh
 
 ***You can run locally on the same computer or remotely on GPU instance depending on your preferences. For better performance use VLLM deployment mode in GPU instance.***
 
