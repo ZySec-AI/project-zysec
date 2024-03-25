@@ -45,8 +45,8 @@ You have the flexibility to run the ZySec AI application either locally on your 
 
 ### Notes
 
-- Ensure that the remote GPU instance has the necessary hardware requirements and software dependencies installed.
-- Adjust the deployment scripts (`start_web_ui.sh` and `start_model_server.sh`) as needed to suit the remote environment, particularly for handling GPU resources.
+- Ensure that the remote GPU instance hosting model API has the necessary hardware requirements and software dependencies installed.
+- The remote model API server should be compaitble with openai API format. vLLM server is recommended. 
 - Test the application thoroughly in the GPU environment to ensure stability and performance meet your expectations.
 
 
@@ -61,7 +61,7 @@ You have the flexibility to run the ZySec AI application either locally on your 
       ```bash
       git clone https://github.com/ZySec-AI/ZySec.git
 
-2. **Starting the Application Server**: For remote model server, please update the config.cfg. The script below will download the model and run the applicaiton locally, if can modify the configuration file:
+2. **Starting the Application Server**: Modify the config.cfg file as per per your requirement. By default the the script will download the model and run a local instance using llama-cpp-python[server]:
       ```bash
       chmod +x start.sh
       ./start.sh
