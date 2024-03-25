@@ -135,24 +135,27 @@ start_local_model_server() {
 
 }
 
+# Modified check_start_local_model_server function to include USE_LOCAL_SERVER check
 check_start_local_model_server() 
 {   
-    export LOCAL_BASE_URL=$LOCAL_BASE_URL
-    export LOCAL_API_KEY=$LOCAL_API_KEY
-    # Check if port is already in use
-    local port=$(echo $LOCAL_BASE_URL | awk -F'[:/]' '{print $5}')
-    local pid=$(lsof -i:$port -sTCP:LISTEN -t 2>/dev/null) # Suppress system messages
+    if [ "$USE_LOCAL_SERVER" = "yes" ]; then
+        export LOCAL_BASE_URL=$LOCAL_BASE_URL
+        export LOCAL_API_KEY=$LOCAL_API_KEY
+        # Check if port is already in use
+        local port=$(echo $LOCAL_BASE_URL | awk -F'[:/]' '{print $5}')
+        local pid=$(lsof -i:$port -sTCP:LISTEN -t 2>/dev/null) # Suppress system messages
 
-    if [[ ! -z "$pid" ]]; then
-        if ps -f -p $pid 2>/dev/null | grep -q "llama_cpp.server"; then
-            echo "INFO: Model server is already running."
-            return
+        if [[ ! -z "$pid" ]]; then
+            if ps -f -p $pid 2>/dev/null | grep -q "llama_cpp.server"; then
+                echo "INFO: Model server is already running."
+                return
+            else
+                echo "ERROR: Port $port is in use by another application, please change the port in the configuration file and try again."
+                exit 1
+            fi
         else
-            echo "ERROR: Port $port is in use by another application, please change the port in the configuration file and try again."
-            exit 1
+            start_local_model_server
         fi
-    else
-      start_local_model_server
     fi
 }
 
@@ -198,12 +201,12 @@ start_app_with_remote_server() {
 # create virtual envrionment
 create_venv
 
-# based on configuration check if model server needs to be installed locally
-if [ -n "$REMOTE_BASE_URL" ]; then
-  echo "INFO: applicaiton will connect to remote model server"
-  start_app_with_remote_server
+# Main execution logic
+if [ "$USE_LOCAL_SERVER" = "yes" ]; then
+    # Download model and start local model server if USE_LOCAL_SERVER is set to yes
+    download_model
+    check_start_local_model_server
 else
-  download_model
-  check_start_local_model_server
-  start_app_server
+    echo "INFO: Skipping local model server setup as USE_LOCAL_SERVER is set to no."
 fi
+start_app_server

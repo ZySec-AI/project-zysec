@@ -59,6 +59,6 @@ def query_llm(prompt, page="nav_private_ai", retriever=None, message_store=None,
         return formatted_msg
 
     except Exception as e:
-        error_message = f"An error occurred while querying the language model: {e}"
+        error_message = f"Is model server running ? Ensure you have right settings at About/Server Mode Selection (You can try demo mode).\n An error occurred while querying the language model: {e}"
         app_logger.error(error_message)
         return error_message
