@@ -1,8 +1,14 @@
 #!/bin/bash
 
-set +x
-
 source "$PWD/config.cfg"
+
+# set degub mode
+if [ "$SCRIPT_DEBUG_MODE" = "on" ]; then
+  echo "INFO: Debugging mode is enabled in config file, script will run in debug mode"
+  set -x
+else 
+  set +x
+fi
 
 model_dir="$PWD/models/ZySec-AI"
 model_path="$model_dir/$MODEL_FILE"
@@ -33,7 +39,12 @@ download_model() {
     if [ ! -f "$model_path" ]; then
         echo "INFO: Model file $MODEL_FILE does not exist. Downloading now."
         cd "$model_dir" || { echo "ERROR: Failed to navigate to $model_dir"; exit 1; }
-        curl -L -o "$MODEL_FILE" "https://huggingface.co/ZySec-AI/ZySec-7B-GGUF/resolve/main/$MODEL_FILE?download=true" > /dev/null 2>&1 && echo "INFO: Download completed." || { echo "ERROR: Failed to download model."; exit 1; }
+        if curl -L -o "$MODEL_FILE" "https://huggingface.co/ZySec-AI/ZySec-7B-GGUF/resolve/main/$MODEL_FILE?download=true"; then
+            echo "INFO: Download completed."
+        else
+        echo "ERROR: Failed to download the model. Run the script in debug mode by setting SCRIPT_DEBUG_MODE=yes in the config.cfg"
+        exit 1
+        fi
     else
         echo "INFO: Model file $MODEL_FILE already exists. Skipping download."
     fi
@@ -47,10 +58,10 @@ check_api_server_connection() {
 
     if [[ ! "$url" =~ ^http(s)?://[^/]+ ]]; then
         echo "ERROR: The URL '$url' is not valid, please check the config file"
-        return 1  # Or `exit 1` depending on the context
+        return 1 
     fi
 
-    local curl_error_file="/tmp/curl_error_$$.txt" # Temporary file for curl errors
+    local curl_error_file="/tmp/curl_error_$$.txt"
     
     echo "INFO: Checking if model server is ready..."
 
@@ -93,15 +104,16 @@ start_local_model_server() {
     source $venv_path/bin/activate
 
     if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == *"$venv_path" ]]; then
-        echo "INFO: Now in the 'ZySec' virtual environment."
+        echo "INFO: successfuly actiavted 'ZySec' virtual environment."
+        echo "INFO: upgrading pip, setuptools and wheel"
         python3 -m pip install --quiet --upgrade pip
         pip install --quiet --upgrade pip setuptools wheel
 
         if [[ "$OSTYPE" == "darwin"* ]]; then
-            echo "INFO: Running on macOS"
+            echo "INFO: The script is running on macOS, cheking if apple metal is supported"
             metal_info=$(system_profiler SPDisplaysDataType | grep "Metal")
             if [[ ! -z "$metal_info" ]]; then
-                echo "INFO: Macbook with Metal"
+                echo "INFO: The current device supports Metal, enabling metal on llama-cpp-python[server]"
                 export CMAKE_ARGS="-DLLAMA_METAL_EMBED_LIBRARY=ON -DLLAMA_METAL=on"
                 export FORCE_CMAKE=1
                 pip install --quiet llama-cpp-python[server] --no-cache-dir
@@ -112,20 +124,22 @@ start_local_model_server() {
         fi
 
         echo "INFO: Starting model server with model file at $model_path"
+        # In start_local_model_server function, after starting the server with nohup:
         if [ "$ENABLE_MODEL_SERVER_LOG" == "yes" ]; then
             nohup python3 -m llama_cpp.server --model "$model_path" --n_batch $BATCH_SIZE --n_ctx $CONTEXT_LENGTH --verbose true --n_gpu_layers $GPU_LAYERS --chat_format zephyr > ./server.log 2>&1 &
         else
             nohup python3 -m llama_cpp.server --model "$model_path" --n_batch $BATCH_SIZE --n_ctx $CONTEXT_LENGTH --verbose true --n_gpu_layers $GPU_LAYERS --chat_format zephyr > /dev/null 2>&1 &
         fi
-
+        MODEL_SERVER_PID=$!
+        export MODEL_SERVER_PID  # Export the PID to an environment variable
+        echo "INFO: Model server started with PID $MODEL_SERVER_PID."
         sleep 5
         check_api_server_connection $LOCAL_BASE_URL $LOCAL_API_KEY
-                check_api_server_connection $LOCAL_BASE_URL $LOCAL_API_KEY
         result=$?
         if [ "$result" -eq 0 ]; then
             echo "INFO: Connection to model server was successful."
         else
-            echo "EROR: Failed to connect to the model server, please enable log to degug"
+            echo "EROR: Failed to connect to the model server, please enable server log to degug"
             exit 1
         fi
     else
@@ -135,6 +149,19 @@ start_local_model_server() {
 
 }
 
+stop_model_server() {
+    if [ -n "$MODEL_SERVER_PID" ]; then
+        echo "INFO: Stopping model server with PID $MODEL_SERVER_PID..."
+        kill "$MODEL_SERVER_PID"
+        unset MODEL_SERVER_PID  # Unset the variable after stopping the server
+        echo "INFO: Model server stopped."
+    else
+        echo "WARNING: Model server PID is not set. The server may not have been started or it was already stopped."
+    fi
+}
+trap stop_model_server SIGINT SIGTERM
+
+
 # Modified check_start_local_model_server function to include USE_LOCAL_SERVER check
 check_start_local_model_server() 
 {   
@@ -142,15 +169,15 @@ check_start_local_model_server()
         export LOCAL_BASE_URL=$LOCAL_BASE_URL
         export LOCAL_API_KEY=$LOCAL_API_KEY
         # Check if port is already in use
-        local port=$(echo $LOCAL_BASE_URL | awk -F'[:/]' '{print $5}')
-        local pid=$(lsof -i:$port -sTCP:LISTEN -t 2>/dev/null) # Suppress system messages
+        port=$(echo $LOCAL_BASE_URL | awk -F'[:/]' '{print $5}')
+        pid=$(lsof -i:$port -sTCP:LISTEN -t 2>/dev/null) # Suppress system messages
 
         if [[ ! -z "$pid" ]]; then
             if ps -f -p $pid 2>/dev/null | grep -q "llama_cpp.server"; then
-                echo "INFO: Model server is already running."
+                echo "INFO: Model server is already running with process $pid"
                 return
             else
-                echo "ERROR: Port $port is in use by another application, please change the port in the configuration file and try again."
+                echo "ERROR: Port $port is in use by another application, please change the port in the config file and try again."
                 exit 1
             fi
         else
@@ -160,7 +187,6 @@ check_start_local_model_server()
 }
 
 start_app_server () {
-
 # for now pull the latest changes to run locally, in future it will be replaced by releases
 echo "INFO: Pulling latest changes from Git repository..."
 git pull origin main > /dev/null 2>&1
@@ -170,18 +196,25 @@ source $venv_path/bin/activate 2>/dev/null
 
 # Check if we are in the right virtual environment
 if [[ "$VIRTUAL_ENV" != "" && "$VIRTUAL_ENV" == *"$venv_path" ]]; then
-    echo "INFO: Now in the 'ZySec' virtual environment."
+    echo "INFO: Succesfully activated 'ZySec' virtual environment."
     # upgrade pip
+    echo "INFO: uprgading pip"
     python3 -m pip install --upgrade pip > /dev/null 2>&1
+    echo "INFO: installing necessary python packages"
     # Install requirements
-    pip install -r requirements.txt -q > /dev/null 2>&1
+    pip install -r requirements.txt > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      echo "INFO: starting streamlit app..."
+      streamlit run app.py
+    else
+      echo "ERROR: pip failed to install packages, run the script in debug mode by setting SCRIPT_DEBUG_MODE=yes in the config.cfg"
+      exit 1
+    fi
 else
-    echo "ERROR: Failed to activate 'ZySec' virtual environment. Exiting."
+    echo "ERROR: Failed to activate 'ZySec' virtual environment, run the script in debug mode by setting SCRIPT_DEBUG_MODE=yes in the config.cfg"
     exit 1
 fi
 
-echo "INFO: starting streamlit app..."
-streamlit run app.py
 
 }
 
