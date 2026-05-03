@@ -1,8 +1,8 @@
-name: Post merge summary comment
+name: PR checklist comment
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, reopened, synchronize]
     branches: [develop]
 
 permissions:
@@ -10,118 +10,135 @@ permissions:
 
 jobs:
   comment:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Post ZySec practices summary
+      - name: Find existing bot comment
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: github-actions[bot]
+          body-includes: "<!-- zysec-pr-checklist -->"
+
+      - name: Post or update ZySec PR checklist
         uses: actions/github-script@v7
         with:
           script: |
             const pr = context.payload.pull_request;
             const actor = pr.user.login;
-            const branch = pr.head.ref;
-            const base = 'develop';
             const docsBase = 'https://github.com/ZySec-AI/devops-practices/blob/develop';
+            const existingId = '${{ steps.find-comment.outputs.comment-id }}';
 
-            const body = `## ✅ Merged to \`develop\` — ZySec Automated Controls Summary
+            const body = `<!-- zysec-pr-checklist -->
+## 👋 Hey @${actor} — here's what will run before this PR can merge
 
-            Thanks @${actor}! Here's a summary of all automated checks that protect the \`${base}\` branch, plus links to help you stay aligned with ZySec engineering practices.
+All checks below are **automated and enforced**. Review them now so you're not blocked at review time.
 
-            ---
+---
 
-            ### 🔐 Security Checks (every PR)
-            | Check | Tool | Blocks merge? |
-            |-------|------|--------------|
-            | Secret & credential scan (full git history) | Gitleaks | ✅ Yes |
-            | Python SAST — injection, weak crypto, hardcoded creds | Bandit | ✅ Yes (HIGH / CRITICAL) |
-            | Deep multi-language SAST | CodeQL | ✅ Yes |
-            | Dependency CVE scan | Trivy | ✅ Yes (HIGH / CRITICAL) |
-            | Container image CVE scan | Trivy | ✅ Yes (HIGH / CRITICAL) |
-            | New dependency license check | Dependency Review | ✅ Yes |
-            | New dependency CVE check | Dependency Review | ✅ Yes (HIGH+) |
+### 🔐 Security — will block merge if any fail
+| Check | Tool | Fails if |
+|-------|------|---------|
+| Secret & credential scan (full git history) | Gitleaks | Any verified secret found |
+| Python SAST — injection, weak crypto, hardcoded creds | Bandit | HIGH or CRITICAL severity |
+| Deep multi-language SAST | CodeQL | Any security finding |
+| Dependency CVE scan | Trivy | HIGH or CRITICAL CVE in deps |
+| Container image CVE scan | Trivy | HIGH or CRITICAL CVE in image |
+| New dependency license check | Dependency Review | Unapproved license added |
+| New dependency CVE check | Dependency Review | HIGH+ CVE in new dep |
 
-            ### ✅ Quality Gates (every PR)
-            | Check | Tool | Blocks merge? |
-            |-------|------|--------------|
-            | Linting + format check (Python) | Ruff | ✅ Yes |
-            | Type checking (Python) | MyPy | ⚠️ Advisory only |
-            | Test coverage | pytest-cov | ✅ Yes (drops below **80%**) |
-            | ESLint (TypeScript / JS) | ESLint | ✅ Yes |
-            | TypeScript type check | tsc | ✅ Yes |
-            | Build check (Node) | pnpm build | ✅ Yes |
-            | Format + lint (Rust) | cargo fmt + Clippy | ✅ Yes |
-            | Tests (Rust) | cargo test | ✅ Yes |
+### ✅ Quality — will block merge if any fail
+| Check | Tool | Fails if |
+|-------|------|---------|
+| Linting + format check (Python) | Ruff | Any lint or format error |
+| Type checking (Python) | MyPy | *(advisory — does not block)* |
+| Test coverage | pytest-cov | Coverage drops below **80%** |
+| ESLint (TypeScript / JS) | ESLint | Any lint error |
+| TypeScript type check | tsc | Any type error |
+| Build check (Node) | pnpm build | Build fails |
+| Format + lint (Rust) | cargo fmt + Clippy | Any warning |
+| Tests (Rust) | cargo test | Any test fails |
 
-            ### 🌿 Branch & PR Standards (every PR)
-            | Check | Blocks merge? |
-            |-------|--------------|
-            | Branch name matches \`type/description\` convention | ✅ Yes |
-            | Valid source → target merge flow | ✅ Yes |
-            | PR has description ≥ 20 characters | ✅ Yes |
-            | PR has a \`type:*\` label | ✅ Yes |
-            | Minimum 1 approving review | ✅ Yes |
-            | All conversations resolved | ✅ Yes |
+### 🌿 Branch & PR standards — will block merge if any fail
+| Check | Fails if |
+|-------|---------|
+| Branch name convention | Doesn't match \`type/description\` (e.g. \`feat/my-feature\`) |
+| Merge flow | Invalid source → target (feature branches must target \`develop\`) |
+| PR description | Body is empty or < 20 chars |
+| PR label | No \`type:feature\`, \`type:bug\`, \`type:chore\`, or \`type:docs\` label |
+| Approving review | At least 1 approval required |
+| Resolved conversations | All comments must be resolved |
 
-            ### 🤖 Post-merge Audit (this run)
-            An AI code audit is now running on this diff. If a **CRITICAL** finding is detected, it will open an issue automatically.
+### 🤖 AI review — advisory, does not block
+An AI reviewer will post inline comments on security, quality, and logic issues. It won't block merge but findings are worth addressing.
 
-            ### 🗓️ Scheduled Controls
-            | Schedule | What runs |
-            |----------|-----------|
-            | Every Monday 03:00 UTC | Full security scan (Gitleaks + CodeQL + Trivy) on all branches |
-            | Every Thursday 08:00 UTC | Soft code freeze reminder |
-            | Every Friday 02:00 UTC | Hard code freeze reminder |
-            | Every Friday 09:30 UTC | Sprint retro issue with metrics |
-            | Weekdays 04:00 UTC | Stale PR / issue check |
+---
 
-            ---
+<details>
+<summary>🌿 Branch naming quick reference</summary>
 
-            ### 📚 Learn More — ZySec Engineering Practices
+**Format:** \`type/short-description\` — lowercase, hyphens only, no underscores
 
-            | Resource | Link |
-            |----------|------|
-            | 🏠 Developer Documentation Hub | [devops-practices](https://github.com/ZySec-AI/devops-practices) |
-            | 🌿 Branch Strategy & Naming | [branch-strategy.md](${docsBase}/03-Operational-Practices/branch-strategy.md) |
-            | 🔒 All 69 Automated Controls | [workflow-controls.md](${docsBase}/03-Operational-Practices/workflow-controls.md) |
-            | 🚀 Release Management | [release-management.md](${docsBase}/03-Operational-Practices/release-management.md) |
-            | 🔐 Secure Coding Guidelines | [secure-coding-guidelines.md](${docsBase}/05-Security-and-Governance/secure-coding-guidelines.md) |
-            | 🧪 Testing & QA | [testing-and-quality-assurance.md](${docsBase}/02-Coding-Guidelines/testing-and-quality-assurance.md) |
+| Prefix | Use for |
+|--------|---------|
+| \`feat/\` or \`feature/\` | New features |
+| \`fix/\` or \`bugfix/\` | Bug fixes |
+| \`hotfix/\` | Urgent production fixes only |
+| \`chore/\` | Maintenance, deps, config |
+| \`docs/\` | Documentation only |
+| \`refactor/\` | Refactoring without behaviour change |
+| \`test/\` | Test additions or fixes |
+| \`ci/\` | CI/CD pipeline changes |
 
-            ---
+**Good:** \`feat/oauth-login\` · \`fix/cors-header-leak\` · \`chore/bump-fastapi-0.112\`
 
-            <details>
-            <summary>🌿 Quick branch reference</summary>
+**Bad:** \`my-branch\` · \`Feature/LoginPage\` · \`fix_cors\` · \`john/working\`
 
-            **Allowed branch types:** \`feat/\`, \`fix/\`, \`hotfix/\`, \`chore/\`, \`docs/\`, \`refactor/\`, \`test/\`, \`perf/\`, \`build/\`, \`ci/\`, \`revert/\`
+**Standard flow:** \`feat/… → develop → stage → release\`
 
-            **Standard flow:** \`feat/my-feature → develop → stage → release\`
+**Code freeze:** Soft Thu 4 PM IST · Hard Fri 3 PM IST · No new feature PRs after freeze
 
-            **Hotfix flow:** \`hotfix/critical-fix → release\` _(+ back-merge to develop)_
+</details>
 
-            **Code freeze:** Soft Thu 4 PM IST · Hard Fri 3 PM IST · Deploy Wed 12 PM IST (bi-weekly)
+<details>
+<summary>🏷️ Labels you should set on this PR</summary>
 
-            **Do:** One branch per ticket · squash merge · rebase before PR · delete after merge
+Add exactly one \`type:*\` label — the PR standards check will fail without it:
 
-            **Don't:** Push directly to protected branches · use uppercase or underscores · let branches live > 1 sprint
+| Label | When to use |
+|-------|------------|
+| \`type:feature\` | New functionality |
+| \`type:bug\` | Defect or regression |
+| \`type:chore\` | Maintenance, deps, config |
+| \`type:docs\` | Documentation only |
 
-            </details>
+Other useful labels:
+| Label | Effect |
+|-------|--------|
+| \`hotfix\` | Bypasses code freeze, fast-tracks review |
+| \`bot-skip\` | Skips AI review for this PR |
+| \`bot-fix-please\` | Ask the AI to raise a fix PR for an issue |
 
-            <details>
-            <summary>🏷️ Useful labels</summary>
+</details>
 
-            | Label | Use |
-            |-------|-----|
-            | \`bot-fix-please\` | Ask the AI to raise a fix PR |
-            | \`bot-skip\` | Skip AI review for this PR/issue |
-            | \`hotfix\` | Bypass freeze, fast-track review |
-            | \`qa-approved\` | Required before merging to \`release\` |
-            | \`severity:critical\` / \`severity:high\` | Exempt from stale close |
+---
 
-            </details>`;
+📚 **Learn more:** [ZySec Engineering Practices](https://github.com/ZySec-AI/devops-practices) · [Branch Strategy](${docsBase}/03-Operational-Practices/branch-strategy.md) · [All 69 Controls](${docsBase}/03-Operational-Practices/workflow-controls.md) · [Secure Coding](${docsBase}/05-Security-and-Governance/secure-coding-guidelines.md) · [Testing & QA](${docsBase}/02-Coding-Guidelines/testing-and-quality-assurance.md)
 
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              body: body.replace(/^            /gm, ''),
-            });
+*This comment updates automatically if you push new commits.*`;
+
+            if (existingId) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: parseInt(existingId),
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body,
+              });
+            }
