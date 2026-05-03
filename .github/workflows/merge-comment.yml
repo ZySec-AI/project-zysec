@@ -1,0 +1,127 @@
+name: Post merge summary comment
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [develop]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  comment:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post ZySec practices summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const actor = pr.user.login;
+            const branch = pr.head.ref;
+            const base = 'develop';
+            const docsBase = 'https://github.com/ZySec-AI/devops-practices/blob/develop';
+
+            const body = `## ✅ Merged to \`develop\` — ZySec Automated Controls Summary
+
+            Thanks @${actor}! Here's a summary of all automated checks that protect the \`${base}\` branch, plus links to help you stay aligned with ZySec engineering practices.
+
+            ---
+
+            ### 🔐 Security Checks (every PR)
+            | Check | Tool | Blocks merge? |
+            |-------|------|--------------|
+            | Secret & credential scan (full git history) | Gitleaks | ✅ Yes |
+            | Python SAST — injection, weak crypto, hardcoded creds | Bandit | ✅ Yes (HIGH / CRITICAL) |
+            | Deep multi-language SAST | CodeQL | ✅ Yes |
+            | Dependency CVE scan | Trivy | ✅ Yes (HIGH / CRITICAL) |
+            | Container image CVE scan | Trivy | ✅ Yes (HIGH / CRITICAL) |
+            | New dependency license check | Dependency Review | ✅ Yes |
+            | New dependency CVE check | Dependency Review | ✅ Yes (HIGH+) |
+
+            ### ✅ Quality Gates (every PR)
+            | Check | Tool | Blocks merge? |
+            |-------|------|--------------|
+            | Linting + format check (Python) | Ruff | ✅ Yes |
+            | Type checking (Python) | MyPy | ⚠️ Advisory only |
+            | Test coverage | pytest-cov | ✅ Yes (drops below **80%**) |
+            | ESLint (TypeScript / JS) | ESLint | ✅ Yes |
+            | TypeScript type check | tsc | ✅ Yes |
+            | Build check (Node) | pnpm build | ✅ Yes |
+            | Format + lint (Rust) | cargo fmt + Clippy | ✅ Yes |
+            | Tests (Rust) | cargo test | ✅ Yes |
+
+            ### 🌿 Branch & PR Standards (every PR)
+            | Check | Blocks merge? |
+            |-------|--------------|
+            | Branch name matches \`type/description\` convention | ✅ Yes |
+            | Valid source → target merge flow | ✅ Yes |
+            | PR has description ≥ 20 characters | ✅ Yes |
+            | PR has a \`type:*\` label | ✅ Yes |
+            | Minimum 1 approving review | ✅ Yes |
+            | All conversations resolved | ✅ Yes |
+
+            ### 🤖 Post-merge Audit (this run)
+            An AI code audit is now running on this diff. If a **CRITICAL** finding is detected, it will open an issue automatically.
+
+            ### 🗓️ Scheduled Controls
+            | Schedule | What runs |
+            |----------|-----------|
+            | Every Monday 03:00 UTC | Full security scan (Gitleaks + CodeQL + Trivy) on all branches |
+            | Every Thursday 08:00 UTC | Soft code freeze reminder |
+            | Every Friday 02:00 UTC | Hard code freeze reminder |
+            | Every Friday 09:30 UTC | Sprint retro issue with metrics |
+            | Weekdays 04:00 UTC | Stale PR / issue check |
+
+            ---
+
+            ### 📚 Learn More — ZySec Engineering Practices
+
+            | Resource | Link |
+            |----------|------|
+            | 🏠 Developer Documentation Hub | [devops-practices](https://github.com/ZySec-AI/devops-practices) |
+            | 🌿 Branch Strategy & Naming | [branch-strategy.md](${docsBase}/03-Operational-Practices/branch-strategy.md) |
+            | 🔒 All 69 Automated Controls | [workflow-controls.md](${docsBase}/03-Operational-Practices/workflow-controls.md) |
+            | 🚀 Release Management | [release-management.md](${docsBase}/03-Operational-Practices/release-management.md) |
+            | 🔐 Secure Coding Guidelines | [secure-coding-guidelines.md](${docsBase}/05-Security-and-Governance/secure-coding-guidelines.md) |
+            | 🧪 Testing & QA | [testing-and-quality-assurance.md](${docsBase}/02-Coding-Guidelines/testing-and-quality-assurance.md) |
+
+            ---
+
+            <details>
+            <summary>🌿 Quick branch reference</summary>
+
+            **Allowed branch types:** \`feat/\`, \`fix/\`, \`hotfix/\`, \`chore/\`, \`docs/\`, \`refactor/\`, \`test/\`, \`perf/\`, \`build/\`, \`ci/\`, \`revert/\`
+
+            **Standard flow:** \`feat/my-feature → develop → stage → release\`
+
+            **Hotfix flow:** \`hotfix/critical-fix → release\` _(+ back-merge to develop)_
+
+            **Code freeze:** Soft Thu 4 PM IST · Hard Fri 3 PM IST · Deploy Wed 12 PM IST (bi-weekly)
+
+            **Do:** One branch per ticket · squash merge · rebase before PR · delete after merge
+
+            **Don't:** Push directly to protected branches · use uppercase or underscores · let branches live > 1 sprint
+
+            </details>
+
+            <details>
+            <summary>🏷️ Useful labels</summary>
+
+            | Label | Use |
+            |-------|-----|
+            | \`bot-fix-please\` | Ask the AI to raise a fix PR |
+            | \`bot-skip\` | Skip AI review for this PR/issue |
+            | \`hotfix\` | Bypass freeze, fast-track review |
+            | \`qa-approved\` | Required before merging to \`release\` |
+            | \`severity:critical\` / \`severity:high\` | Exempt from stale close |
+
+            </details>`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: body.replace(/^            /gm, ''),
+            });
