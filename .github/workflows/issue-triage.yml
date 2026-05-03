@@ -1,0 +1,20 @@
+name: Issue Triage
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  triage:
+    if: |
+      !contains(github.event.issue.labels.*.name, 'bot-skip') &&
+      !contains(github.event.issue.labels.*.name, 'bot-reviewed')
+    uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@main
+    secrets: inherit
+    with:
+      mode: issue-triage
