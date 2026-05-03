@@ -1,0 +1,41 @@
+name: Stale PR & Issue Notifier
+
+on:
+  schedule:
+    - cron: '0 4 * * 1-5'  # weekdays 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  stale:
+    name: Mark stale items
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.ORG_ADMIN_TOKEN || github.token }}
+          # PRs open > 2 days without review = stale (per <24hr review target)
+          days-before-pr-stale: 2
+          days-before-pr-close: 5
+          stale-pr-label: 'needs-review'
+          stale-pr-message: |
+            ⏰ This PR has had no activity for 2 days.
+            Per ZySec AI standards, PRs should be reviewed within 24 hours.
+            Please review or request a reviewer.
+          close-pr-message: |
+            This PR has been closed due to 5 days of inactivity.
+            Re-open if still relevant.
+          # Issues stale after 7 days
+          days-before-issue-stale: 7
+          days-before-issue-close: 14
+          stale-issue-label: 'needs-info'
+          stale-issue-message: |
+            ⏰ This issue has had no activity for 7 days.
+            Please provide an update or close if resolved.
+          close-issue-message: |
+            This issue has been closed due to 14 days of inactivity.
+          exempt-pr-labels: 'bot-skip,hotfix,type:docs'
+          exempt-issue-labels: 'bot-skip,severity:critical,severity:high'
