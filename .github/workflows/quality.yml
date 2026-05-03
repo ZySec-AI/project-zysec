@@ -1,0 +1,22 @@
+name: Quality Gates
+
+on:
+  pull_request:
+    branches: [develop, stage]
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  gates:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-quality.yml@main
+    secrets: inherit
+    with:
+      python: ${{ contains(fromJSON('["Python","Jupyter Notebook"]'), github.event.repository.language) }}
+      node: ${{ contains(fromJSON('["TypeScript","JavaScript"]'), github.event.repository.language) }}
+      rust: ${{ github.event.repository.language == 'Rust' }}
+      coverage_threshold: 80
