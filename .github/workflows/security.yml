@@ -1,0 +1,25 @@
+name: Security
+
+on:
+  push:
+    branches: [develop, stage, release]
+  pull_request:
+    branches: [develop, stage, release]
+  schedule:
+    - cron: '0 3 * * 1'  # weekly Monday 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  scan:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@main
+    secrets: inherit
+    with:
+      python: ${{ contains(fromJSON('["Python","Jupyter Notebook"]'), github.event.repository.language) }}
+      node: ${{ contains(fromJSON('["TypeScript","JavaScript"]'), github.event.repository.language) }}
+      rust: ${{ github.event.repository.language == 'Rust' }}
+      docker: ${{ hashFiles('Dockerfile', '*/Dockerfile') != '' }}
