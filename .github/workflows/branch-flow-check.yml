@@ -1,0 +1,74 @@
+name: validate-branch-flow
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  branch-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate branch name (Conventional Commits)
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          PATTERN='^(feat|feature|fix|bugfix|bug|hotfix|chore|docs|doc|documentation|refactor|test|tests|perf|performance|build|ci|cd|cicd|revert|release-prep|support|experiment|spike)/[a-z0-9][a-z0-9.-]*(/[a-z0-9][a-z0-9.-]*)?$'
+          EXEMPT='^(develop|stage|release|release/.+)$'
+
+          if [[ "$BRANCH" =~ $EXEMPT ]] || [[ "$BRANCH" =~ $PATTERN ]]; then
+            echo "✓ Branch name valid: $BRANCH"
+          else
+            echo "❌ Invalid branch name: $BRANCH"
+            echo ""
+            echo "Branch names must follow ZySec AI Conventional Commits standard:"
+            echo "  <type>/<short-description>"
+            echo ""
+            echo "Allowed types:"
+            echo "  feat | feature | fix | bugfix | bug | hotfix | chore"
+            echo "  docs | doc | documentation | refactor | test | tests"
+            echo "  perf | performance | build | ci | cd | cicd | revert"
+            echo "  release-prep | support | experiment | spike"
+            echo ""
+            echo "Examples: feat/oauth-login, fix/cors-leak, chore/bump-deps"
+            echo "Body: lowercase letters, digits, hyphens, dots only."
+            exit 1
+          fi
+
+      - name: Validate merge flow
+        run: |
+          SRC="${{ github.head_ref }}"
+          DST="${{ github.base_ref }}"
+          echo "Flow: $SRC → $DST"
+
+          # Allowed flows:
+          #  any feature/fix/etc → develop
+          #  develop → stage (if stage exists)
+          #  develop → release (canonical)
+          #  stage → release
+          #  hotfix/* → release (urgent path)
+          #  release → develop (back-merge)
+
+          case "$DST" in
+            develop)
+              # Anything → develop allowed (feature branches)
+              [[ "$SRC" =~ ^(stage|release)$ ]] && { echo "✓ back-merge: $SRC → develop"; exit 0; }
+              echo "✓ $SRC → develop"
+              ;;
+            stage)
+              [[ "$SRC" == "develop" ]] && { echo "✓ promote: develop → stage"; exit 0; }
+              echo "❌ Only 'develop' may promote to 'stage'"; exit 1
+              ;;
+            release|release/*)
+              if [[ "$SRC" == "develop" || "$SRC" == "stage" || "$SRC" =~ ^hotfix/ ]]; then
+                echo "✓ $SRC → $DST"
+                exit 0
+              fi
+              echo "❌ Only 'develop', 'stage', or 'hotfix/*' may merge into release"; exit 1
+              ;;
+            *)
+              echo "❌ Unexpected target: $DST"; exit 1
+              ;;
+          esac
