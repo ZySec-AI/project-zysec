@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  push:
+    branches: [release]
+    tags: ['v*']
+  pull_request:
+    branches: [release]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-release.yml@main
+    secrets: inherit
+    with:
+      environment: production
+      notify: true
