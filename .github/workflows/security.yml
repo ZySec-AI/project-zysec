@@ -19,7 +19,7 @@ jobs:
     uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@main
     secrets: inherit
     with:
-      python: ${{ contains(fromJSON('["Python","Jupyter Notebook"]'), github.event.repository.language) }}
-      node: ${{ contains(fromJSON('["TypeScript","JavaScript"]'), github.event.repository.language) }}
-      rust: ${{ github.event.repository.language == 'Rust' }}
-      docker: ${{ hashFiles('Dockerfile', '*/Dockerfile') != '' }}
+      python: ${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements*.txt', 'setup.py', 'setup.cfg') != '' }}
+      node: ${{ hashFiles('package.json', 'pnpm-lock.yaml', 'yarn.lock', 'package-lock.json') != '' }}
+      rust: ${{ hashFiles('Cargo.toml') != '' }}
+      docker: ${{ hashFiles('Dockerfile', '*/Dockerfile', '**/Dockerfile') != '' }}
