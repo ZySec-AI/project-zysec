@@ -16,5 +16,4 @@ jobs:
     secrets: inherit
     with:
       mode: audit
-      image_tag: latest
       fail_on: CRITICAL
