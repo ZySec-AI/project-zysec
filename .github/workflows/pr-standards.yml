@@ -1,0 +1,81 @@
+name: PR Standards
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, labeled, unlabeled, ready_for_review]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+  validate:
+    name: Validate PR metadata
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR has description
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if [ -z "$BODY" ] || [ ${#BODY} -lt 20 ]; then
+            echo "❌ PR description is empty or too short. Describe what changed and why."
+            exit 1
+          fi
+          echo "✓ PR has description"
+
+      - name: Check type label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LABELS=$(gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/labels \
+            --jq '[.[].name] | join(" ")' 2>/dev/null || echo "")
+          echo "Labels: $LABELS"
+
+          HAS_TYPE=false
+          for label in $LABELS; do
+            case "$label" in
+              type:*) HAS_TYPE=true ;;
+            esac
+          done
+
+          if ! $HAS_TYPE; then
+            echo "❌ PR must have a type label: type:feature, type:bug, type:chore, type:docs"
+            exit 1
+          fi
+          echo "✓ type label present"
+
+      - name: Check milestone
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MILESTONE=$(gh api /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }} \
+            --jq '.milestone.title // ""' 2>/dev/null || echo "")
+          if [ -z "$MILESTONE" ]; then
+            echo "⚠️ No milestone set on this PR. Consider assigning one."
+          else
+            echo "✓ milestone: $MILESTONE"
+          fi
+
+      - name: Hotfix fast-track
+        if: contains(github.event.pull_request.labels.*.name, 'hotfix')
+        env:
+          GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+        run: |
+          PR="${{ github.event.pull_request.number }}"
+          REPO="${{ github.repository }}"
+
+          # Set 00-Immediate milestone if exists
+          MILESTONE=$(gh api /repos/$REPO/milestones \
+            --jq '.[] | select(.title | startswith("00")) | .number' 2>/dev/null | head -1 || echo "")
+          [ -n "$MILESTONE" ] && gh api -X PATCH /repos/$REPO/pulls/$PR -f milestone=$MILESTONE >/dev/null 2>&1 || true
+
+          # Add comment
+          gh pr comment $PR --repo $REPO \
+            --body "🚨 **Hotfix detected** — fast-track rules apply:
+          - Requires 1 expedited review (target: 1 hour)
+          - Bypasses code freeze
+          - Will be merged directly to \`release\` after approval" \
+            2>/dev/null || true
+
+          echo "✓ hotfix fast-track applied"
