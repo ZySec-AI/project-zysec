@@ -1,0 +1,19 @@
+name: Issue Auto-Fix
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  fix:
+    if: github.event.label.name == 'bot-fix-please'
+    uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@main
+    secrets: inherit
+    with:
+      mode: issue-fix
+      fail_on: NEVER
