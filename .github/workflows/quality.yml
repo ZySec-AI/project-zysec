@@ -16,7 +16,7 @@ jobs:
     uses: ZySec-AI/.github/.github/workflows/_reusable-quality.yml@main
     secrets: inherit
     with:
-      python: ${{ contains(fromJSON('["Python","Jupyter Notebook"]'), github.event.repository.language) }}
-      node: ${{ contains(fromJSON('["TypeScript","JavaScript"]'), github.event.repository.language) }}
-      rust: ${{ github.event.repository.language == 'Rust' }}
+      python: ${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements*.txt', 'setup.py', 'setup.cfg') != '' }}
+      node: ${{ hashFiles('package.json', 'pnpm-lock.yaml', 'yarn.lock', 'package-lock.json') != '' }}
+      rust: ${{ hashFiles('Cargo.toml') != '' }}
       coverage_threshold: 80
