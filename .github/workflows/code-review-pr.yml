@@ -3,7 +3,7 @@ name: Code Review (PR)
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [develop]
+    branches: [release, release/**, main]
 
 permissions:
   contents: read
