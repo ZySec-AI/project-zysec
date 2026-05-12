@@ -3,20 +3,56 @@ name: Code Review (PR)
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    branches: [release, release/**, main]
+    branches: [develop]
 
 permissions:
   contents: read
   pull-requests: write
   issues: write
 
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
+  filter:
+    name: Check if review needed
+    runs-on: ubuntu-latest
+    outputs:
+      skip: ${{ steps.check.outputs.skip }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check diff for meaningful changes
+        id: check
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.head.sha }}"
+          # Get changed files
+          CHANGED=$(git diff --name-only "$BASE".."$HEAD" 2>/dev/null || echo "")
+          TOTAL=$(echo "$CHANGED" | grep -c . || echo 0)
+          # Count non-trivial files (exclude lock, md, json config, yaml, txt)
+          MEANINGFUL=$(echo "$CHANGED" | grep -vcE '\.(lock|md|txt|json|ya?ml|toml|env\.example|gitignore|prettierrc|eslintrc)$' || echo 0)
+          echo "Total files: $TOTAL, Meaningful: $MEANINGFUL"
+          if [ "$MEANINGFUL" -eq 0 ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Only trivial files changed — skipping AI review"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
   review:
+    name: AI Code Review
+    needs: filter
     if: |
+      needs.filter.outputs.skip == 'false' &&
       !contains(github.event.pull_request.labels.*.name, 'bot-skip') &&
       github.event.pull_request.draft == false
     uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@main
-    secrets: inherit
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
     with:
       mode: pr-review
       fail_on: NEVER
