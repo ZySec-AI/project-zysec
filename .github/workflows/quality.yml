@@ -2,9 +2,7 @@ name: Quality Gates
 
 on:
   pull_request:
-    branches: [develop, stage]
-  push:
-    branches: [develop]
+    branches: [develop, stage, release]
   workflow_dispatch:
 
 permissions:
@@ -14,9 +12,5 @@ permissions:
 jobs:
   gates:
     uses: ZySec-AI/.github/.github/workflows/_reusable-quality.yml@main
-    secrets: inherit
-    with:
-      python: ${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements*.txt', 'setup.py', 'setup.cfg') != '' }}
-      node: ${{ hashFiles('package.json', 'pnpm-lock.yaml', 'yarn.lock', 'package-lock.json') != '' }}
-      rust: ${{ hashFiles('Cargo.toml') != '' }}
-      coverage_threshold: 80
+    secrets:
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
