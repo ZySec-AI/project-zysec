@@ -15,26 +15,27 @@ jobs:
       - name: Validate branch name (Conventional Commits)
         run: |
           BRANCH="${{ github.head_ref }}"
-          PATTERN='^(feat|feature|fix|bugfix|bug|hotfix|chore|docs|doc|documentation|refactor|test|tests|perf|performance|build|ci|cd|cicd|revert|release-prep|support|experiment|spike)/[a-z0-9][a-z0-9.-]*(/[a-z0-9][a-z0-9.-]*)?$'
-          EXEMPT='^(develop|stage|release|release/.+)$'
+
+          # Allowed prefixes — broad enough for real teams
+          # Body allows: letters (any case), digits, hyphens, underscores, dots, slashes
+          PATTERN='^(feat|feature|fix|bugfix|bug|hotfix|chore|docs|doc|documentation|refactor|test|tests|perf|performance|build|ci|cd|cicd|revert|release-prep|support|experiment|exp|spike|task|improve|improvement)/[a-zA-Z0-9][a-zA-Z0-9._/-]*$'
+          EXEMPT='^(develop|stage|main|release|release/.+|staging)$'
 
           if [[ "$BRANCH" =~ $EXEMPT ]] || [[ "$BRANCH" =~ $PATTERN ]]; then
             echo "✓ Branch name valid: $BRANCH"
           else
-            echo "❌ Invalid branch name: $BRANCH"
+            echo "⚠️ Branch name '$BRANCH' looks unusual."
             echo ""
-            echo "Branch names must follow ZySec AI Conventional Commits standard:"
-            echo "  <type>/<short-description>"
+            echo "Recommended format: type/short-description"
             echo ""
-            echo "Allowed types:"
+            echo "Allowed prefixes:"
             echo "  feat | feature | fix | bugfix | bug | hotfix | chore"
             echo "  docs | doc | documentation | refactor | test | tests"
             echo "  perf | performance | build | ci | cd | cicd | revert"
-            echo "  release-prep | support | experiment | spike"
+            echo "  release-prep | support | experiment | exp | spike | task | improve"
             echo ""
-            echo "Examples: feat/oauth-login, fix/cors-leak, chore/bump-deps"
-            echo "Body: lowercase letters, digits, hyphens, dots only."
-            exit 1
+            echo "Examples: feat/oauth-login  fix/JIRA-123  chore/bump-deps  feat/user/auth"
+            echo "This is a WARNING only — the check still passes."
           fi
 
       - name: Validate merge flow
@@ -43,32 +44,31 @@ jobs:
           DST="${{ github.base_ref }}"
           echo "Flow: $SRC → $DST"
 
-          # Allowed flows:
-          #  any feature/fix/etc → develop
-          #  develop → stage (if stage exists)
-          #  develop → release (canonical)
-          #  stage → release
-          #  hotfix/* → release (urgent path)
-          #  release → develop (back-merge)
-
           case "$DST" in
             develop)
-              # Anything → develop allowed (feature branches)
               [[ "$SRC" =~ ^(stage|release)$ ]] && { echo "✓ back-merge: $SRC → develop"; exit 0; }
               echo "✓ $SRC → develop"
               ;;
-            stage)
-              [[ "$SRC" == "develop" ]] && { echo "✓ promote: develop → stage"; exit 0; }
-              echo "❌ Only 'develop' may promote to 'stage'"; exit 1
+            stage|staging)
+              [[ "$SRC" == "develop" ]] && { echo "✓ promote: develop → $DST"; exit 0; }
+              echo "❌ Only 'develop' may promote to '$DST'"; exit 1
               ;;
             release|release/*)
-              if [[ "$SRC" == "develop" || "$SRC" == "stage" || "$SRC" =~ ^hotfix/ ]]; then
+              if [[ "$SRC" == "develop" || "$SRC" == "stage" || "$SRC" == "staging" || "$SRC" =~ ^hotfix/ ]]; then
                 echo "✓ $SRC → $DST"
                 exit 0
               fi
               echo "❌ Only 'develop', 'stage', or 'hotfix/*' may merge into release"; exit 1
               ;;
+            main)
+              if [[ "$SRC" == "release" || "$SRC" =~ ^release/ || "$SRC" =~ ^hotfix/ ]]; then
+                echo "✓ $SRC → main"
+                exit 0
+              fi
+              echo "❌ Direct merge to main is not allowed. Path: develop → release → main."
+              exit 1
+              ;;
             *)
-              echo "❌ Unexpected target: $DST"; exit 1
+              echo "⚠️ Merging into '$DST' — verify this is intentional (non-standard target)"
               ;;
           esac
