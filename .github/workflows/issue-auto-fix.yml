@@ -13,7 +13,9 @@ jobs:
   fix:
     if: github.event.label.name == 'bot-fix-please'
     uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@main
-    secrets: inherit
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
     with:
       mode: issue-fix
       fail_on: NEVER
