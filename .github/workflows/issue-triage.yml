@@ -2,7 +2,7 @@ name: Issue Triage
 
 on:
   issues:
-    types: [opened, edited, reopened]
+    types: [opened, reopened]
 
 permissions:
   contents: read
@@ -15,6 +15,8 @@ jobs:
       !contains(github.event.issue.labels.*.name, 'bot-skip') &&
       !contains(github.event.issue.labels.*.name, 'bot-reviewed')
     uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@main
-    secrets: inherit
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
     with:
       mode: issue-triage
