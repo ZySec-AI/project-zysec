@@ -1,25 +1,23 @@
 name: Security
 
 on:
-  push:
-    branches: [develop, stage, release]
   pull_request:
     branches: [develop, stage, release]
+  push:
+    branches: [release]       # full scan only when cutting release
   schedule:
-    - cron: '0 3 * * 1'  # weekly Monday 03:00 UTC
+    - cron: '0 3 * * 1'      # weekly Monday 03:00 UTC
   workflow_dispatch:
 
 permissions:
   contents: read
   security-events: write
   pull-requests: write
+  actions: read
 
 jobs:
   scan:
     uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@main
-    secrets: inherit
-    with:
-      python: ${{ hashFiles('pyproject.toml', 'requirements.txt', 'requirements*.txt', 'setup.py', 'setup.cfg') != '' }}
-      node: ${{ hashFiles('package.json', 'pnpm-lock.yaml', 'yarn.lock', 'package-lock.json') != '' }}
-      rust: ${{ hashFiles('Cargo.toml') != '' }}
-      docker: ${{ hashFiles('Dockerfile', '*/Dockerfile', '**/Dockerfile') != '' }}
+    secrets:
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+      TRIVY_TEAM_WEBHOOK: ${{ secrets.TRIVY_TEAM_WEBHOOK }}
