@@ -1,0 +1,58 @@
+name: License Compatibility Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check-license:
+    name: Check for incompatible license text
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Scan diff for incompatible license text
+        env:
+          GH_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN || github.token }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          PATTERNS=(
+            "GNU General Public License"
+            "GNU Affero General Public License"
+            "GNU Lesser General Public License"
+            "Server Side Public License"
+            "Commons Clause"
+            " AGPL"
+            " SSPL"
+            "Business Source License"
+            "Elastic License"
+            "PolyForm"
+          )
+          DIFF=$(git diff --no-color "$BASE_SHA".."$HEAD_SHA" -- \
+            '*.txt' '*.md' 'LICENSE*' 'LICENCE*' 'COPYING*' 'NOTICE*' \
+            'package.json' 'pyproject.toml' 'Cargo.toml' 'go.mod' \
+            2>/dev/null || echo "")
+          FOUND=""
+          for PATTERN in "${PATTERNS[@]}"; do
+            if echo "$DIFF" | grep -qi "$PATTERN"; then
+              FOUND="$FOUND\n- \`$PATTERN\`"
+            fi
+          done
+          if [ -n "$FOUND" ]; then
+            echo "::error::Incompatible license text detected in diff"
+            printf "Matched patterns:%b\n" "$FOUND"
+            echo ""
+            echo "ZySec AI software is proprietary and commercially distributed."
+            echo "Use only: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, Python-2.0, MPL-2.0"
+            echo "If false positive, add the 'bot-skip' label to bypass."
+            exit 1
+          fi
+          echo "check-license: no incompatible license text detected"
