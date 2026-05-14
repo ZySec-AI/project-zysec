@@ -1,0 +1,53 @@
+# =============================================================================
+# WORKFLOW: Security (Hotfix Fast-Path)
+# PURPOSE:  Fast security gate for hotfix PRs to release branch.
+#           Hotfix path: gitleaks + trivy only (< 5 min, skips CodeQL).
+#           Non-hotfix path: full security scan via reusable.
+# TRIGGERS: pull_request to release/* (opened, synchronize, reopened)
+# WHY fast-mode: hotfixes are urgent. CodeQL takes 10-20 min — too slow.
+#   But secret leaks + known CVEs must still be caught before merge.
+# FIX:      Removed continue-on-error from both security steps — hotfix
+#   fast-path was providing security theatre (scans ran but never blocked).
+# CONTACT:  platform-eng@zysec.ai | #releases
+# =============================================================================
+name: Security (Hotfix Fast-Path)
+
+on:
+  pull_request:
+    branches: [release]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  security-events: write
+  pull-requests: write
+
+jobs:
+  fast-security:
+    name: Fast Security Gate (hotfix)
+    # Only runs for PRs explicitly labelled 'hotfix'
+    if: contains(github.event.pull_request.labels.*.name, 'hotfix')
+    # Delegates to reusable with fast-mode:true — skips CodeQL (slow)
+    # but still runs gitleaks (secret scan) and trivy (CVE scan)
+    # FIX: was inline steps with continue-on-error:true — findings were ignored
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@main
+    with:
+      python: true
+      node: true
+      fast-mode: true   # skips CodeQL and bandit; keeps gitleaks + trivy
+    secrets:
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+      TRIVY_TEAM_WEBHOOK: ${{ secrets.TRIVY_TEAM_WEBHOOK }}
+
+  full-security:
+    name: Full Security Gate (non-hotfix)
+    # Non-hotfix PRs to release still get the full scan
+    if: "!contains(github.event.pull_request.labels.*.name, 'hotfix')"
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@main
+    with:
+      python: true
+      node: true
+      fast-mode: false
+    secrets:
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+      TRIVY_TEAM_WEBHOOK: ${{ secrets.TRIVY_TEAM_WEBHOOK }}
