@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   release:
-    uses: ZySec-AI/.github/.github/workflows/_reusable-release.yml@main
+    uses: ZySec-AI/.github/.github/workflows/_reusable-release.yml@develop
     secrets: inherit
     with:
       environment: production

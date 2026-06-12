@@ -1,24 +1,17 @@
-name: Docs to Wiki
+name: docs-to-wiki
 
 on:
   push:
-    branches: [main, master]
+    branches: [develop, stage, release]
     paths:
       - 'docs/**'
+      - 'README.md'
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 'Preview changes without pushing to wiki'
-        type: boolean
-        default: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  wiki:
+  sync:
     uses: ZySec-AI/.github/.github/workflows/_reusable-docs-to-wiki.yml@develop
-    with:
-      wiki_files: 'README.md,product.md,architecture.md,technology.md,implementation.md,api.md'
-      generate_sidebar: true
-      dry_run: ${{ inputs.dry_run || false }}
+    secrets: inherit
