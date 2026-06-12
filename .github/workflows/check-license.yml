@@ -1,0 +1,14 @@
+name: License Compatibility Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check-license:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-check-license.yml@develop
+    secrets: inherit
