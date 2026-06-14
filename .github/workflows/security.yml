@@ -8,7 +8,6 @@ on:
       - 'docs/**'
       - 'LICENSE'
       - '.gitignore'
-      - '.github/**'
   pull_request:
     branches: [develop, stage, release]
     paths-ignore:
@@ -16,39 +15,18 @@ on:
       - 'docs/**'
       - 'LICENSE'
       - '.gitignore'
-      - '.github/**'
   workflow_dispatch:
 
 permissions:
   contents: read
   security-events: write
+  actions: read
+  pull-requests: write
 
 jobs:
-  detect:
-    name: Detect language stacks
-    runs-on: ubuntu-latest
-    outputs:
-      python: ${{ steps.detect.outputs.python }}
-      node: ${{ steps.detect.outputs.node }}
-      rust: ${{ steps.detect.outputs.rust }}
-      docker: ${{ steps.detect.outputs.docker }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: detect
-        run: |
-          echo "python=$(find . -name 'requirements*.txt' -o -name 'pyproject.toml' -o -name 'setup.py' | head -1 | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
-          echo "node=$(find . -name 'package.json' | head -1 | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
-          echo "rust=$(find . -name 'Cargo.toml' | head -1 | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
-          echo "docker=$(find . -name 'Dockerfile' | head -1 | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
-
   scan:
-    needs: detect
     uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
     with:
-      python: ${{ needs.detect.outputs.python == '1' }}
-      node: ${{ needs.detect.outputs.node == '1' }}
-      rust: ${{ needs.detect.outputs.rust == '1' }}
-      docker: ${{ needs.detect.outputs.docker == '1' }}
-      # Fast mode on develop (skip CodeQL), full on release/stage
+      auto_detect: true
       fast-mode: ${{ github.ref != 'refs/heads/release' && github.ref != 'refs/heads/stage' }}
     secrets: inherit
