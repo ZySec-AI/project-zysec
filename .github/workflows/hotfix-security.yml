@@ -1,0 +1,31 @@
+name: Security (Hotfix Fast-Path)
+
+on:
+  pull_request:
+    branches: [release]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  pull-requests: write
+
+jobs:
+  fast-security:
+    name: Fast Security Gate (hotfix)
+    if: contains(github.event.pull_request.labels.*.name, 'hotfix')
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
+    with:
+      auto_detect: true
+      fast-mode: true
+    secrets: inherit
+
+  full-security:
+    name: Full Security Gate (non-hotfix)
+    if: "!contains(github.event.pull_request.labels.*.name, 'hotfix')"
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
+    with:
+      auto_detect: true
+      fast-mode: false
+    secrets: inherit
