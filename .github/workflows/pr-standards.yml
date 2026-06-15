@@ -1,0 +1,16 @@
+name: PR Standards
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, labeled, unlabeled, ready_for_review]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+  validate:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-pr-standards.yml@develop
+    secrets:
+      ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
