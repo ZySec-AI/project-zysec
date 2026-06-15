@@ -1,0 +1,15 @@
+name: Stale PR & Issue Notifier
+
+on:
+  schedule:
+    - cron: '0 4 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  stale:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-stale.yml@develop
+    secrets: inherit
