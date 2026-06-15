@@ -1,0 +1,28 @@
+name: Quality Gates
+
+on:
+  push:
+    branches: [develop, stage, release]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
+  pull_request:
+    branches: [develop, stage, release]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-quality.yml@develop
+    secrets: inherit
+    with:
+      auto_detect: true
