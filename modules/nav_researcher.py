@@ -54,7 +54,7 @@ def app(message_store):
     app_st_session_utils.manage_message_history(current_page)
     
     greeting_message = common_utils.get_page_greeting(st.session_state['current_page'], st.session_state.get('username', ''))
-    st.chat_message("assistant").markdown(greeting_message, unsafe_allow_html=True)
+    st.chat_message("assistant").markdown(greeting_message)
     app_st_session_utils.update_session_state('page_loaded', True)
 
 
@@ -69,7 +69,7 @@ def app(message_store):
         with st.spinner("Processing your request..."):
             if db_retriever:
                 formatted_response = app_prompt.query_llm(prompt,page=current_page, retriever=db_retriever.as_retriever(search_type="similarity", search_kwargs={"k": app_constants.RAG_K}), message_store=st.session_state['message_store'],use_retrieval_chain=True)
-                st.chat_message("assistant").markdown(formatted_response, unsafe_allow_html=True)
+                st.chat_message("assistant").markdown(formatted_response)
                 app_st_session_utils.add_message_to_session("user", prompt)
                 app_st_session_utils.add_message_to_session("assistant", formatted_response)
                 app_logger.info(f"Processed user prompt: {prompt}")
