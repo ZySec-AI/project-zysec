@@ -1,0 +1,22 @@
+# =============================================================================
+# WORKFLOW: Enforce Label & Milestone Standards
+# PURPOSE:  Delegates to the org-level reusable workflow which auto-deletes
+#           any label or milestone that deviates from the canonical standard
+#           and opens a guide issue for the creator.
+# MANAGED:  Do not edit — synced from ZySec-AI/.github/workflow-templates/
+# =============================================================================
+name: Enforce Label & Milestone Standards
+
+on:
+  label:
+    types: [created]
+  milestone:
+    types: [created]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  enforce:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-enforce-standards.yml@develop
