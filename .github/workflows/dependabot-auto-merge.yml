@@ -1,0 +1,15 @@
+# Thin wrapper. The logic lives in ZySec-AI/.github so it is fixed in one place.
+name: Dependabot Auto-Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  auto-merge:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-dependabot-auto-merge.yml@develop
+    secrets: inherit
