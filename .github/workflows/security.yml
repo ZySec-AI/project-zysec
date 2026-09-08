@@ -24,9 +24,48 @@ permissions:
   pull-requests: write
 
 jobs:
-  scan:
+  # Push / manual — full scan on release/stage, fast on develop
+  push-scan:
+    name: Security Scan (push)
+    if: github.event_name != 'pull_request'
     uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
     with:
       auto_detect: true
       fast-mode: ${{ github.ref != 'refs/heads/release' && github.ref != 'refs/heads/stage' }}
+    secrets: inherit
+
+  # PRs to develop or stage — fast scan always
+  pr-fast:
+    name: Security Scan (PR fast)
+    if: github.event_name == 'pull_request' && (github.base_ref == 'develop' || github.base_ref == 'stage')
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
+    with:
+      auto_detect: true
+      fast-mode: true
+    secrets: inherit
+
+  # PRs to release with hotfix label — fast scan
+  pr-release-hotfix:
+    name: Security Gate — release (hotfix)
+    if: >
+      github.event_name == 'pull_request' &&
+      github.base_ref == 'release' &&
+      contains(github.event.pull_request.labels.*.name, 'hotfix')
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
+    with:
+      auto_detect: true
+      fast-mode: true
+    secrets: inherit
+
+  # PRs to release without hotfix label — full scan (blocking)
+  pr-release-full:
+    name: Security Gate — release (full)
+    if: >
+      github.event_name == 'pull_request' &&
+      github.base_ref == 'release' &&
+      !contains(github.event.pull_request.labels.*.name, 'hotfix')
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
+    with:
+      auto_detect: true
+      fast-mode: false
     secrets: inherit
