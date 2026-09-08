@@ -8,9 +8,9 @@ updates:
       time: "03:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
-    # Empty on purpose: Dependabot's default `dependencies` label is not in the
-    # org's 43-label taxonomy, and sync-labels.yml would delete it again.
-    labels: []
+    # `dependencies` is in the org taxonomy (labels.yml), so it survives
+    # sync-labels.yml and makes every automated bump filterable.
+    labels: ["dependencies"]
     commit-message:
       prefix: "deps"
     groups:
@@ -29,9 +29,9 @@ updates:
       time: "03:00"
       timezone: "UTC"
     open-pull-requests-limit: 5
-    # Empty on purpose: Dependabot's default `dependencies` label is not in the
-    # org's 43-label taxonomy, and sync-labels.yml would delete it again.
-    labels: []
+    # `dependencies` is in the org taxonomy (labels.yml), so it survives
+    # sync-labels.yml and makes every automated bump filterable.
+    labels: ["dependencies"]
     commit-message:
       prefix: "ci"
     groups:
