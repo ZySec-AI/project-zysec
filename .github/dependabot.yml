@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 10
+    # Empty on purpose: Dependabot's default `dependencies` label is not in the
+    # org's 43-label taxonomy, and sync-labels.yml would delete it again.
+    labels: []
+    commit-message:
+      prefix: "deps"
+    groups:
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    reviewers:
+      - "ZySec-AI/org-maintenance"
+
+  - package-ecosystem: "github-actions"
+    directory: ".github/workflows"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 5
+    # Empty on purpose: Dependabot's default `dependencies` label is not in the
+    # org's 43-label taxonomy, and sync-labels.yml would delete it again.
+    labels: []
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        update-types:
+          - "minor"
+          - "patch"
