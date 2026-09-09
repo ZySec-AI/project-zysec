@@ -1,0 +1,34 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [develop, stage, release]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
+  pull_request:
+    branches: [develop, stage, release]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+      - '.gitignore'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  pull-requests: write
+
+# This is the only Security workflow trigger. The scan implementation,
+# including Gitleaks, lives in _reusable-security.yml.
+jobs:
+  scan:
+    uses: ZySec-AI/.github/.github/workflows/_reusable-security.yml@develop
+    with:
+      runs_on: '["self-hosted","linux","x64","zysec-ai-ci"]'
+      auto_detect: true
+    secrets: inherit
