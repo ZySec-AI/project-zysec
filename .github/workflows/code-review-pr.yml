@@ -13,7 +13,7 @@ permissions:
 jobs:
   review:
     if: |
-      !contains(github.event.pull_request.labels.*.name, 'bot-skip') &&
+      !contains(github.event.pull_request.labels.*.name, 'agent:skip') &&
       github.event.pull_request.draft == false
     uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@develop
     secrets:

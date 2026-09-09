@@ -12,8 +12,8 @@ permissions:
 jobs:
   triage:
     if: |
-      !contains(github.event.issue.labels.*.name, 'bot-skip') &&
-      !contains(github.event.issue.labels.*.name, 'bot-reviewed')
+      !contains(github.event.issue.labels.*.name, 'agent:skip') &&
+      !contains(github.event.issue.labels.*.name, 'agent:reviewed')
     uses: ZySec-AI/.github/.github/workflows/_reusable-code-review.yml@develop
     secrets:
       LLM_PROVIDER: ${{ secrets.LLM_PROVIDER }}
