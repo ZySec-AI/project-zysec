@@ -1,0 +1,17 @@
+# Ownership is deliberately narrow: only .github/ is owned.
+#
+# A pull request that touches nothing under .github/ is unaffected by this file —
+# GitHub requires a code-owner review only on pull requests that modify owned
+# paths. Product code keeps its normal single-approval flow.
+#
+# Why .github/ specifically. Everything that governs how this repository is
+# built, scanned and released lives there: the workflow wrappers that call the
+# org's reusable workflows, dependabot.yml, and this file. For a `pull_request`
+# event GitHub runs the workflow *from the pull request itself*, so a change to
+# quality.yml or security.yml gates its own pull request — which means an
+# unreviewed edit can weaken the checks that were supposed to catch it.
+#
+# Either team can approve; both carry write access to every repository in the
+# organisation, which CODEOWNERS requires or the entry is silently ignored.
+
+/.github/  @ZySec-AI/org-admins @ZySec-AI/org-maintenance
