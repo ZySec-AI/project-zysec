@@ -191,7 +191,7 @@ SQLAlchemy==2.0.26
 srsly==2.4.8
 sse-starlette==2.0.0
 st-annotated-text==4.0.1
-starlette==0.36.3
+starlette==1.6.0
 starlette-context==0.3.6
 streamlit==1.31.1
 streamlit-camera-input-live==0.2.0
