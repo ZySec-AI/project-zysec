@@ -240,6 +240,6 @@ watchfiles==0.21.0
 weasel==0.3.4
 websocket-client==1.7.0
 websockets==12.0
-wrapt==1.16.0
+wrapt==2.4.1
 yarl==1.9.4
 zipp==3.17.0
