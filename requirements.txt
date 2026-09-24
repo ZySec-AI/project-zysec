@@ -27,7 +27,7 @@ cloudpathlib==0.16.0
 coloredlogs==15.0.1
 confection==0.1.4
 contourpy==1.2.0
-cryptography==42.0.2
+cryptography==50.0.0
 curl_cffi==0.6.0b9
 cycler==0.12.1
 cymem==2.0.8
