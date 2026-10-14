@@ -1,5 +1,8 @@
 #file utils.py
 import os
+import socket
+import ipaddress
+from urllib.parse import urlparse
 from modules import app_constants, app_to_vectorstore,app_page_definitions,common_utils
 from modules import app_logger
 import json
@@ -12,9 +15,29 @@ app_logger = app_logger.app_logger
 work_dir = app_constants.WORKSPACE_DIRECTORY
 system_content_file = metadata_path=app_constants.SYSTEM_CONTENT_DATA
 
-def download_file(url):
+def is_safe_url(url):
+    """Reject URLs that don't use http/https or that resolve to a private,
+    loopback, link-local, or otherwise non-public address, to prevent SSRF
+    via user-supplied download URLs."""
     try:
-        response = requests.get(url)
+        parsed = urlparse(url)
+        if parsed.scheme not in ("http", "https") or not parsed.hostname:
+            return False
+        for family, _, _, _, sockaddr in socket.getaddrinfo(parsed.hostname, None):
+            ip = ipaddress.ip_address(sockaddr[0])
+            if not ip.is_global:
+                return False
+        return True
+    except Exception as e:
+        app_logger.error(f"Failed to validate URL {url}. Error: {e}")
+        return False
+
+def download_file(url):
+    if not is_safe_url(url):
+        app_logger.error(f"Refusing to download from disallowed URL: {url}")
+        return False
+    try:
+        response = requests.get(url, timeout=15)
         response.raise_for_status()
         sanitized_filename = sanitize_filename(url.split('/')[-1])
         sanitized_local_path = os.path.join(app_constants.WORKSPACE_DIRECTORY+"/docs/", sanitized_filename)
