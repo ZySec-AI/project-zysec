@@ -6,7 +6,7 @@ antlr4-python3-runtime==4.9.3
 anyio==4.2.0
 asgiref==3.7.2
 async-timeout==4.0.3
-attrs==23.2.0
+attrs==26.1.0
 backoff==2.2.1
 bcrypt==4.1.2
 beautifulsoup4==4.12.3
