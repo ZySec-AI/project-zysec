@@ -14,3 +14,4 @@ jobs:
     uses: ZySec-AI/.github/.github/workflows/_reusable-pr-standards.yml@develop
     secrets:
       ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+      CI_PROXY_URL: ${{ secrets.CI_PROXY_URL }}

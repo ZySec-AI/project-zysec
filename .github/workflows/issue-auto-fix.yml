@@ -19,6 +19,7 @@ jobs:
       LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
       LLM_MODEL: ${{ secrets.LLM_MODEL }}
       ORG_ADMIN_TOKEN: ${{ secrets.ORG_ADMIN_TOKEN }}
+      CI_PROXY_URL: ${{ secrets.CI_PROXY_URL }}
     with:
       mode: issue-fix
       fail_on: NEVER
