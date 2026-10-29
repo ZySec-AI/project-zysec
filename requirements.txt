@@ -47,7 +47,7 @@ exceptiongroup==1.2.0
 Faker==23.2.1
 fastapi==0.109.2
 favicon==0.7.0
-filelock==3.13.1
+filelock==4.2.1
 filetype==1.2.0
 flatbuffers==23.5.26
 fonttools==4.48.1
