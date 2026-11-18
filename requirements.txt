@@ -164,7 +164,7 @@ python-dotenv==1.0.1
 python-iso639==2024.2.7
 python-magic==0.4.27
 python-multipart==0.0.9
-pytz==2024.1
+pytz==2026.3.post1
 PyYAML==6.0.1
 rapidfuzz==3.6.1
 referencing==0.33.0
