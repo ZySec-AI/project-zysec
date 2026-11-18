@@ -31,7 +31,7 @@ def app(message_store, current_page="nav_private_ai", use_retrieval_chain=False)
     # Manage message history
     app_st_session_utils.manage_message_history(current_page)
     greeting_message = common_utils.get_page_greeting(st.session_state['current_page'], st.session_state.get('username', ''),files_indexed)
-    st.chat_message("assistant").markdown(greeting_message, unsafe_allow_html=True)
+    st.chat_message("assistant").markdown(greeting_message)
 
     # Display chat messages
     for message in st.session_state.get("messages", []):
