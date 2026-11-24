@@ -193,7 +193,7 @@ sse-starlette==2.0.0
 st-annotated-text==4.0.1
 starlette==0.36.3
 starlette-context==0.3.6
-streamlit==1.31.1
+streamlit==1.54.0
 streamlit-camera-input-live==0.2.0
 streamlit-card==1.0.0
 streamlit-embedcode==0.1.2
