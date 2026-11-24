@@ -87,7 +87,7 @@ langchain-core==0.1.22
 langchain-openai==0.0.5
 langcodes==3.3.0
 langdetect==1.0.9
-langsmith==0.0.87
+langsmith==0.8.18
 layoutparser==0.3.4
 llama_cpp_python==0.2.53
 lxml==4.9.4
