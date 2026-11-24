@@ -91,7 +91,7 @@ langsmith==0.0.87
 layoutparser==0.3.4
 llama_cpp_python==0.2.53
 lxml==4.9.4
-Markdown==3.5.2
+Markdown==3.8.1
 markdown-it-py==3.0.0
 markdownlit==0.0.7
 MarkupSafe==2.1.5
