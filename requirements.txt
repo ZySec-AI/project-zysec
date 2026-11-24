@@ -67,7 +67,7 @@ httpx==0.26.0
 huggingface-hub==0.20.3
 humanfriendly==10.0
 humanize==4.9.0
-idna==3.6
+idna==3.15
 importlib-metadata==6.11.0
 importlib-resources==6.1.1
 iopath==0.1.10
