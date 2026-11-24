@@ -160,7 +160,7 @@ PyPika==0.48.9
 pyproject_hooks==1.0.0
 pytesseract==0.3.10
 python-dateutil==2.8.2
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 python-iso639==2024.2.7
 python-magic==0.4.27
 python-multipart==0.0.9
