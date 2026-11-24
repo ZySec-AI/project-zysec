@@ -95,7 +95,7 @@ Markdown==3.5.2
 markdown-it-py==3.0.0
 markdownlit==0.0.7
 MarkupSafe==2.1.5
-marshmallow==3.20.2
+marshmallow==3.26.2
 matplotlib==3.8.2
 mdurl==0.1.2
 mmh3==4.1.0
